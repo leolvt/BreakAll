@@ -8,6 +8,7 @@
 # 
 
 FIND_PATH(GLFW_INCLUDE_DIR GL/glfw.h
+    ${PROJECT_SOURCE_DIR}/include
     $ENV{GLFWDIR}/include 
     /usr/local/include 
     /usr/local/X11R6/include 
@@ -20,6 +21,7 @@ FIND_PATH(GLFW_INCLUDE_DIR GL/glfw.h
     DOC "The directory where GL/glew.h resides"
     )
 FIND_LIBRARY(GLFW_LIBRARIES NAMES glfw PATHS 
+    ${PROJECT_SOURCE_DIR}/lib
     $ENV{GLFWDIR}/lib 
     /usr/local/lib
     /usr/local/X11R6/lib

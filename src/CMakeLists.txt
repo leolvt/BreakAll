@@ -1,10 +1,3 @@
-set(BREAKOUT_LIBS 
-    ${BREAKOUT_LIBS} 
-    ${OPENGL_LIBRARIES} 
-    ${GLFW_LIBRARIES} 
-    ${GLEW_LIBRARY}
-    )
-
 set(BREAKOUT_SRC 
     ${BREAKOUT_SRC} 
     main.cpp 
