@@ -1,0 +1,19 @@
+## .gitignore - Add here what git should ignore!
+##
+## To see if new rules exclude any existing files, run
+## git ls-files -i --exclude-standard
+## after modifying this file.
+
+# Ignore build dir and install (test) dir
+build/*
+install/*
+
+## Editor backup and swap files
+*~
+.\#*
+\#**\#
+.*.sw[op]
+.sw[op]
+
+# ctags file
+tags
