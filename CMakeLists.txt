@@ -1,6 +1,6 @@
 # Initial setup
 cmake_minimum_required(VERSION 2.6)
-project(Breakout)
+project(BreakAll)
 
 # Help cmake find custom modules
 set(CMAKE_MODULE_PATH

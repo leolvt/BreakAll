@@ -1,9 +1,9 @@
-set(BREAKOUT_SRC 
-    ${BREAKOUT_SRC} 
+set(BREAKALL_SRC 
+    ${BREAKALL_SRC} 
     main.cpp 
-    )
+)
 
-add_executable(Breakout ${BREAKOUT_SRC})
-target_link_libraries(Breakout ${BREAKOUT_LIBS})
+add_executable(BreakAll ${BREAKALL_SRC})
+target_link_libraries(BreakAll ${BREAKALL_LIBS})
 
-install(TARGETS Breakout DESTINATION bin)
+install(TARGETS BreakAll DESTINATION bin)
