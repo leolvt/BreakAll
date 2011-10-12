@@ -19,8 +19,8 @@ find_package(FreeType REQUIRED)
 find_package(OGLFT REQUIRED)
 
 # Gather all the libs into one variable
-set(BREAKOUT_LIBS 
-    ${BREAKOUT_LIBS} 
+set(BREAKALL_LIBS 
+    ${BREAKALL_LIBS} 
     ${OPENGL_LIBRARIES} 
     ${GLFW_LIBRARIES} 
     ${GLEW_LIBRARY}
