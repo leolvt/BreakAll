@@ -13,9 +13,11 @@ class GameMode: public Mode
 {
     public:
         GameMode();
-        virtual ~GameMode();
-        virtual void update();
-        virtual void draw();
+        ~GameMode();
+        void update();
+        void draw();
+        void onKeyChange(int key, int status);
+        void onMouseChange(float x, float y);
     
     private:
         OGLFT::Monochrome *face;

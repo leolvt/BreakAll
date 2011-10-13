@@ -2,8 +2,9 @@
 
 int main(int argc, const char *argv[]) 
 {
-    BreakAll ball = BreakAll();
-    ball.run();
+    BreakAll::initialize();
+    BreakAll::run();
+    BreakAll::terminate();
 
     return 0;
 }

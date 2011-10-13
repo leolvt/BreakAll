@@ -8,7 +8,7 @@ GameMode::GameMode()
 {
     // Load Font
     face = new OGLFT::Monochrome(
-            "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf",
+            "DejaVuSansMono.ttf",
             13
     );
     // Always check to make sure the face was properly constructed
@@ -16,10 +16,6 @@ GameMode::GameMode()
         std::cerr << "Could not construct face."  << std::endl;
         return;
     }
-
-    // Set some Needed properties for the font to work properly
-    face->setForegroundColor(0,0,0);
-    glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 }
 
 // ========================== //
@@ -58,11 +54,29 @@ void GameMode::draw()
     glVertex2f(0.50, -0.50);
     glEnd();
 
+    // Set some Needed properties for the font to work properly
+    face->setForegroundColor(0,0,0);
+    glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+
     // Measure and draw the font
     OGLFT::BBox bb = face->measure("Teste de Fonte");
-    std::cout << (bb.y_max_ - bb.y_min_) << std::endl;
+    //std::cout << (bb.y_max_ - bb.y_min_) << std::endl;
     face->draw(-1.2333,-0.97333, "Teste de Fonte");
 
+}
+
+// ========================== //
+
+void GameMode::onKeyChange(int key, int status)
+{
+    std::cout << "Key " << (char) key << " pressed/released." << std::endl;
+}
+
+// ========================== //
+
+void GameMode::onMouseChange(float x, float y)
+{
+    std::cout << "Mouse at: (" << x << ", " << y << ")" << std::endl;
 }
 
 // ========================== //
