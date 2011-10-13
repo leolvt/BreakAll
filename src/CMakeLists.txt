@@ -1,5 +1,6 @@
 set(BREAKALL_SRC 
     ${BREAKALL_SRC} 
+    BreakAll.cpp
     main.cpp 
 )
 
