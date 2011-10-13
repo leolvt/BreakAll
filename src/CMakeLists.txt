@@ -1,5 +1,6 @@
 set(BREAKALL_SRC 
     ${BREAKALL_SRC} 
+    GameMode.cpp
     BreakAll.cpp
     main.cpp 
 )
