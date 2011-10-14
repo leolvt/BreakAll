@@ -1,29 +1,33 @@
 #ifndef GAME_MODE_H_INCLUDED
 #define GAME_MODE_H_INCLUDED
 
-#define OGLFT_NO_SOLID 1
-#define OGLFT_NO_QT 1
-#include <oglft/OGLFT.h>
+#include "Drawable.h"
 
-#include "Mode.h"
+namespace BreakAll {
 
 // ========================== //
 
-class GameMode: public Mode
+class GameMode: public Drawable
 {
     public:
-        GameMode();
+        GameMode(Area gameArea);
         ~GameMode();
         void update();
         void draw();
-        void onKeyChange(int key, int status);
-        void onMouseChange(float x, float y);
+        void onKeyPressed(int key);
+        void onMouseMove(float x, float y);
     
     private:
+        Area gameArea;
+        Area levelArea;
+        Area infoArea;
         OGLFT::Monochrome *face;
+        Drawable* level;
 };
 
 // ========================== //
+
+}; // namespace BreakAll
 
 #endif  /* GAME_MODE_H_INCLUDED */
 

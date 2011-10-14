@@ -1,10 +1,15 @@
 #include <iostream>
 
+#include "Level.h"
+#include "BreakAll.h"
 #include "GameMode.h"
+
+namespace BreakAll {
 
 // ========================== //
 
-GameMode::GameMode()
+GameMode::GameMode(Area gameArea)
+    : gameArea(gameArea)
 {
     // Load Font
     face = new OGLFT::Monochrome(
@@ -16,6 +21,40 @@ GameMode::GameMode()
         std::cerr << "Could not construct face."  << std::endl;
         return;
     }
+
+    // Compute Infobars height
+    float totalHeight = gameArea.top - gameArea.bottom; 
+    float infoHeight = totalHeight * 0.1;
+
+    // Set Info Bar Area
+    this->infoArea = 
+    { 
+        gameArea.top, 
+        gameArea.right, 
+        gameArea.top - infoHeight,
+        gameArea.left
+    };
+
+    // Set Level Area
+    this->levelArea = 
+    {
+        gameArea.top - infoHeight,
+        gameArea.right, 
+        gameArea.bottom + infoHeight,
+        gameArea.left
+    };
+
+    // Calculate LevelInfoBar Area
+    Area levelInfoArea = 
+    {
+        gameArea.bottom + infoHeight,
+        gameArea.right, 
+        gameArea.bottom,
+        gameArea.left
+    };
+
+    // Create the level
+    this->level = new Level(levelArea, levelInfoArea);
 }
 
 // ========================== //
@@ -23,35 +62,30 @@ GameMode::GameMode()
 GameMode::~GameMode()
 {
     if (face != 0) delete face;
+    if (level != 0) delete level;
 }
 
 // ========================== //
 
 void GameMode::update()
 {
-
+    level->update();
 }
 
 // ========================== //
 
 void GameMode::draw()
 {
-    // Draw "Game Area"
-    glBegin(GL_QUADS);
-    glColor3f(1.0,1.0,1.0);
-    glVertex2f(-1.333, -0.9);
-    glVertex2f(-1.333, 0.9);
-    glVertex2f(1.333, 0.9);
-    glVertex2f(1.333, -0.9);
-    glEnd();
+    // Draw the Level
+    level->draw();
 
-    // Draw red quad
+    // Draw the top bar
     glBegin(GL_QUADS);
-    glColor3f(1.0,0.0,0.0);
-    glVertex2f(-0.50, -0.50);
-    glVertex2f(-0.50, 0.50);
-    glVertex2f(0.50, 0.50);
-    glVertex2f(0.50, -0.50);
+        glColor3f(0.9, 0.9, 0.9);
+        glVertex2f(infoArea.left, infoArea.top);
+        glVertex2f(infoArea.right, infoArea.top);
+        glVertex2f(infoArea.right, infoArea.bottom);
+        glVertex2f(infoArea.left, infoArea.bottom);
     glEnd();
 
     // Set some Needed properties for the font to work properly
@@ -59,25 +93,28 @@ void GameMode::draw()
     glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 
     // Measure and draw the font
-    OGLFT::BBox bb = face->measure("Teste de Fonte");
+    //OGLFT::BBox bb = face->measure("Teste de Fonte");
     //std::cout << (bb.y_max_ - bb.y_min_) << std::endl;
-    face->draw(-1.2333,-0.97333, "Teste de Fonte");
+    face->draw(infoArea.left + 0.05, infoArea.top - 0.075, "Teste de Fonte");
 
 }
 
 // ========================== //
 
-void GameMode::onKeyChange(int key, int status)
+void GameMode::onKeyPressed(int key)
 {
-    std::cout << "Key " << (char) key << " pressed/released." << std::endl;
+    if (key == 'Q') BreakAll::stop();
+    level->onKeyPressed(key);
 }
 
 // ========================== //
 
-void GameMode::onMouseChange(float x, float y)
+void GameMode::onMouseMove(float x, float y)
 {
-    std::cout << "Mouse at: (" << x << ", " << y << ")" << std::endl;
+//    std::cout << "Mouse at: (" << x << ", " << y << ")" << std::endl;
+    level->onMouseMove(x, y);
 }
 
 // ========================== //
 
+}; // namespace BreakAll

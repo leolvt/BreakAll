@@ -1,8 +1,6 @@
 #ifndef BREAKALL_H_INCLUDED
 #define BREAKALL_H_INCLUDED
 
-#include "Mode.h"
-
 // ========================== //
 
 namespace BreakAll
@@ -15,6 +13,7 @@ namespace BreakAll
 
     void initialize(int windowWidth = 800, int windowHeight = 600);
     void run();
+    void stop();
     void changeMode(int NewMode);
     void keyCallback(int Key, int Status);
     void mouseCallback(int x, int y);

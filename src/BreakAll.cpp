@@ -1,7 +1,7 @@
-#include <GL/glew.h>
-#include <GL/glfw.h>
+#include <set>
 
 #include "BreakAll.h"
+#include "Drawable.h"
 #include "GameMode.h"
 
 namespace BreakAll 
@@ -18,13 +18,15 @@ namespace
     // These control the current status
     bool isInitialized = false;
     int modeCode = 0;
-    Mode* currentMode = 0;
+    Drawable* currentMode = 0;
     int width = 0;
     int height = 0;
     float aspectRatio = 0;
+    bool running = false;
+    std::set<int> pressedKeys;
 
     // Here we store the available modes
-    Mode* gameMode = 0;
+    Drawable* gameMode = 0;
 };
 
 // ========================== //
@@ -41,11 +43,6 @@ void initialize(int windowWidth, int windowHeight)
     // Check if we already have a BreakAll
     if (isInitialized) return;
 
-    // Start at GameMode
-    gameMode = new GameMode();
-    currentMode = gameMode;
-    modeCode = GAME_MODE;
-    
     // Initialize GLFW, Open a new Window and Initilize GLEW
     glfwInit();
     glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);
@@ -62,8 +59,17 @@ void initialize(int windowWidth, int windowHeight)
     gluOrtho2D(-aspectRatio, aspectRatio,-1,1);
     glMatrixMode( GL_MODELVIEW );
 
+    // Start at GameMode
+    Area totalArea = {1, aspectRatio, -1, -aspectRatio};
+    gameMode = new GameMode(totalArea);
+    currentMode = gameMode;
+    modeCode = GAME_MODE;
+
     // Background Color is initially Black
     glClearColor( 0.0, 0.0, 0.0, 0.0 );
+
+    // Clear pressed keys
+    pressedKeys.clear();
 
     // Mark as initilized
     isInitialized = true;
@@ -88,6 +94,7 @@ void terminate()
 
     // Reset vars
     currentMode = 0;
+    pressedKeys.clear();
 
     // Mark as not initialized
     isInitialized = false;
@@ -99,10 +106,11 @@ void run()
 {
     // Check if we already have a BreakAll
     if (!isInitialized) return;
+    if (running) return;
 
     // Main Loop
-    bool run = true;
-    while (run)
+    running = true;
+    while (running)
     {
         // Clear
         glClear(GL_COLOR_BUFFER_BIT);
@@ -112,14 +120,22 @@ void run()
         currentMode->draw();
 
         // Check if we should stop
-        run= !glfwGetKey( GLFW_KEY_ESC ) &&
-            glfwGetWindowParam( GLFW_OPENED );
+        running = running && glfwGetWindowParam( GLFW_OPENED );
 
         // Swap the buffer and sleep, to avoid high FPS and CPU usage
         glfwSwapBuffers();
         glfwSleep(0.02);
     }
 
+}
+
+// ========================== //
+
+void stop()
+{
+    if (!isInitialized) return;
+    if (!running) return;
+    running = false;
 }
 
 // ========================== //
@@ -143,7 +159,21 @@ void keyCallback(int Key, int Status)
 {
     // Check if we are running and dispatch event to current mode
     if (!isInitialized) return;
-    currentMode->onKeyChange(Key, Status);
+
+    // Try to find the key in the set of currently pressed keys
+    std::set<int>::iterator keyPos = pressedKeys.find(Key);
+    
+    // Add a new Key if this is the first time it is pressed
+    if (keyPos == pressedKeys.end() && Status == GLFW_PRESS)
+    {
+        pressedKeys.insert(Key);
+    }
+    // Remove a key that was pressed and dispatch the event
+    else if (keyPos != pressedKeys.end() && Status == GLFW_RELEASE)
+    {
+        pressedKeys.erase(keyPos);
+        currentMode->onKeyPressed(Key);
+    }
 }
 
 // ========================== //
@@ -158,7 +188,7 @@ void mouseCallback(int x, int y)
     float glYpos = ((float)y / (float)height)*2 - 1;
 
     // Dispatch event to current mode
-    currentMode->onMouseChange(glXpos, glYpos);
+    currentMode->onMouseMove(glXpos, glYpos);
 }
 
 // ========================== //
