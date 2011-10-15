@@ -22,7 +22,7 @@ GameMode::GameMode(Area gameArea)
         return;
     }
 
-    // Compute Infobars height
+    // Compute Infobar height
     float totalHeight = gameArea.top - gameArea.bottom; 
     float infoHeight = totalHeight * 0.1;
 
@@ -40,21 +40,12 @@ GameMode::GameMode(Area gameArea)
     {
         gameArea.top - infoHeight,
         gameArea.right, 
-        gameArea.bottom + infoHeight,
-        gameArea.left
-    };
-
-    // Calculate LevelInfoBar Area
-    Area levelInfoArea = 
-    {
-        gameArea.bottom + infoHeight,
-        gameArea.right, 
         gameArea.bottom,
         gameArea.left
     };
 
     // Create the level
-    this->level = new Level(levelArea, levelInfoArea);
+    this->level = new Level(levelArea);
 }
 
 // ========================== //
@@ -81,7 +72,7 @@ void GameMode::draw()
 
     // Draw the top bar
     glBegin(GL_QUADS);
-        glColor3f(0.9, 0.9, 0.9);
+        glColor3f(0.5, 0.5, 0.9);
         glVertex2f(infoArea.left, infoArea.top);
         glVertex2f(infoArea.right, infoArea.top);
         glVertex2f(infoArea.right, infoArea.bottom);
@@ -103,7 +94,7 @@ void GameMode::draw()
 
 void GameMode::onKeyPressed(int key)
 {
-    if (key == 'Q') BreakAll::stop();
+    if (key == 'Q' || key == GLFW_KEY_ESC) BreakAll::stop();
     level->onKeyPressed(key);
 }
 

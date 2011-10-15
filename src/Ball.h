@@ -3,6 +3,8 @@
 
 #include "Drawable.h"
 
+class Level;
+
 namespace BreakAll {
 
 // ========================== //
@@ -10,13 +12,14 @@ namespace BreakAll {
 class Ball: public Drawable
 {
     public:
-        Ball(float x, float y, float radius);
+        Ball(float x, float y, float radius, Area levelArea);
         void update();
         void draw();
         void onKeyPressed(int key) {};
         void onMouseMove(float x, float y) {};
 
     private:
+        Area levelArea;
         float X, Y;
         float radius;
         float velX, velY;

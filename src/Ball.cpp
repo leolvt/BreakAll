@@ -5,11 +5,11 @@ namespace BreakAll {
 
 // ========================== //
 
-Ball::Ball(float x, float y, float radius)
-    : X(x), Y(y), radius(radius)
+Ball::Ball(float x, float y, float radius, Area levelArea)
+    : X(x), Y(y), radius(radius), levelArea(levelArea)
 {
-    velX = 0.01;
-    velY = 0.02;
+    velX = 0.02;
+    velY = 0.04;
 }
 
 // ========================== //
@@ -21,17 +21,18 @@ void Ball::update()
     Y += velY;
 
     // Check Bounds
-    if (X >= 1.0 || X <= -1.0)
+    if (X >= levelArea.right || X <= levelArea.left )
     {
-        if (X > 1.0) X = 1.0;
-        else if (X < -1.0) X = -1.0;
+        if (X > levelArea.right) X = levelArea.right;
+        else if (X < levelArea.left) X = levelArea.left;
         velX *= -1;
     }
 
-    if (Y >= 1.0 || Y <= -1.0)
+    // Check Upper and Lower bounds
+    if (Y >= levelArea.top || Y <= levelArea.bottom )
     {
-        if (Y > 1.0) Y = 1.0;
-        else if ( Y < -1.0) Y = -1.0;
+        if (Y > levelArea.top) Y = levelArea.top;
+        else if (Y < levelArea.bottom) Y = levelArea.bottom;
         velY *= -1;
     }
 }
@@ -44,7 +45,7 @@ void Ball::draw()
     const float PI = 3.1415926f;
     const int nVertices = 36;
     glBegin(GL_TRIANGLE_FAN);
-        glColor3f(0.50, 0.50, 0.50);
+        glColor3f(0.90, 0.30, 0.30);
         glVertex2f(X, Y);
         for (int i = 0; i <= nVertices; i++) {
             float deg = 2*PI / nVertices * i;
