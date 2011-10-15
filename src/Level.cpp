@@ -110,6 +110,7 @@ void Level::onKeyPressed(int key)
     }
 
     paddle->onKeyPressed(key);
+    ball->onKeyPressed(key);
 }
 
 // ========================== //
@@ -117,6 +118,7 @@ void Level::onKeyPressed(int key)
 void Level::onMouseMove(float x, float y)
 {
     paddle->onMouseMove(x, y);
+    ball->onMouseMove(x, y);
 }
 
 // ========================== //
