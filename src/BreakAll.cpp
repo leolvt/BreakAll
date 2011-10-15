@@ -47,11 +47,11 @@ void initialize(int windowWidth, int windowHeight)
     glfwInit();
     glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4);
     glfwOpenWindowHint(GLFW_WINDOW_NO_RESIZE, 1);
-    glfwOpenWindow(800,600, 8,8,8,0, 0,0, GLFW_WINDOW);
+    glfwOpenWindow(windowWidth,windowHeight, 8,8,8,0, 0,0, GLFW_WINDOW);
     glfwSetKeyCallback( BreakAll::keyCallback );
     glfwSetMousePosCallback( BreakAll::mouseCallback );
     glewInit();
-    width = 800; height = 600;
+    width = windowWidth; height = windowHeight;
 
     // Define our Projection based by the window aspect 
     glMatrixMode( GL_PROJECTION );

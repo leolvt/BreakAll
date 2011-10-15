@@ -13,7 +13,7 @@ GameMode::GameMode(Area gameArea)
 {
     // Load Font
     face = new OGLFT::Monochrome(
-            "DejaVuSansMono.ttf",
+            "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono.ttf",
             13
     );
     // Always check to make sure the face was properly constructed

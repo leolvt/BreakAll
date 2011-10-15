@@ -1,30 +1,29 @@
-#ifndef LEVEL_H_INCLUDED
-#define LEVEL_H_INCLUDED
+#ifndef PADDLE_H_INCLUDED
+#define PADDLE_H_INCLUDED
 
 #include "Drawable.h"
-#include "paddle.h"
 
 namespace BreakAll {
 
 // ========================== //
 
-class Level: public Drawable
+class Paddle: public Drawable
 {
     public:
-        Level(Area levelArea, Area levelInfoArea);
-        ~Level();
+        Paddle(Area paddleSize, Area levelArea, Position startPos);
+        ~Paddle();
         void update();
         void draw();
         virtual void onKeyPressed(int key);
         virtual void onMouseMove(float x, float y);
     private:
+        Area paddleSize;
         Area levelArea;
-        Area levelInfoArea;
-        Paddle * paddle;
+        Position position;
 };
 
 // ========================== //
 
 }; // namespace BreakAll
 
-#endif /* LEVEL_H_INCLUDED */
+#endif /* PADDLE_H_INCLUDED */

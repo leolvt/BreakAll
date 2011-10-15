@@ -20,6 +20,12 @@ typedef struct
     float left;
 } Area;
 
+typedef struct
+{
+    float x;
+    float y;
+} Position;
+
 // ========================== //
 
 class Drawable

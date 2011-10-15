@@ -1,9 +1,10 @@
 set(BREAKALL_SRC 
     ${BREAKALL_SRC} 
+    paddle.cpp
     Level.cpp
     GameMode.cpp
     BreakAll.cpp
-    main.cpp 
+    main.cpp
 )
 
 add_executable(BreakAll ${BREAKALL_SRC})
