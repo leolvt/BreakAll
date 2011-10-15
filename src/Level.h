@@ -1,6 +1,7 @@
 #ifndef LEVEL_H_INCLUDED
 #define LEVEL_H_INCLUDED
 
+#include "Ball.h"
 #include "Drawable.h"
 #include "paddle.h"
 
@@ -15,12 +16,14 @@ class Level: public Drawable
         ~Level();
         void update();
         void draw();
-        virtual void onKeyPressed(int key);
-        virtual void onMouseMove(float x, float y);
+        void onKeyPressed(int key);
+        void onMouseMove(float x, float y);
+        Area getLevelArea();
     private:
         Area levelArea;
         Area levelInfoArea;
         Paddle * paddle;
+        Ball* ball;
 };
 
 // ========================== //

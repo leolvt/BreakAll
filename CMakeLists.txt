@@ -18,6 +18,9 @@ find_package(GLFW REQUIRED)
 find_package(FreeType REQUIRED)
 find_package(OGLFT REQUIRED)
 
+# Find GLM Lib needed for math
+find_package(GLM REQUIRED)
+
 # Gather all the libs into one variable
 set(BREAKALL_LIBS 
     ${BREAKALL_LIBS} 
@@ -36,6 +39,7 @@ include_directories(
     ${GLFW_INCLUDE_DIR}
     ${FREETYPE_INCLUDE_DIR}
     ${OGLFT_INCLUDE_DIR}
+    ${GLM_INCLUDE_DIR}
 )
 link_directories(${PROJECT_SOURCE_DIR}/lib)
 

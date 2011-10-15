@@ -1,4 +1,5 @@
 #include "Level.h"
+#include "Ball.h"
 
 namespace BreakAll {
 
@@ -18,13 +19,18 @@ Level::Level(Area levelArea, Area levelInfoArea)
     startPosPaddle.y = levelArea.bottom + 0.06;
     
     paddle = new Paddle(paddleSize, levelArea, startPosPaddle);
+    this->ball = new Ball(0,0, 0.05);
 }
 
 // ========================== //
 
 Level::~Level()
 {
-
+    if (ball != 0)
+    {
+        delete ball;
+        ball = 0;
+    }   
 }
 
 // ========================== //
@@ -32,22 +38,14 @@ Level::~Level()
 void Level::update()
 {
     paddle->update();
+    ball->update();
 }
 
 // ========================== //
 
 void Level::draw()
 {
-    /*
-    // Draw Level Area
-    glBegin(GL_QUADS);
-        glColor3f(0.0,0.0,0.0);
-        glVertex2f(levelArea.left, levelArea.top);
-        glVertex2f(levelArea.right, levelArea.top);
-        glVertex2f(levelArea.right, levelArea.bottom);
-        glVertex2f(levelArea.left, levelArea.bottom);
-    glEnd();
-    */
+    ball->draw();
 
     // Draw Level Info Bar
     glBegin(GL_QUADS);
@@ -73,6 +71,13 @@ void Level::onKeyPressed(int key)
 void Level::onMouseMove(float x, float y)
 {
     paddle->onMouseMove(x, y);
+}
+
+// ========================== //
+
+Area Level::getLevelArea()
+{
+    return this->levelArea;
 }
 
 // ========================== //

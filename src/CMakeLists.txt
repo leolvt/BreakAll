@@ -1,6 +1,7 @@
 set(BREAKALL_SRC 
     ${BREAKALL_SRC} 
     paddle.cpp
+	Ball.cpp
     Level.cpp
     GameMode.cpp
     BreakAll.cpp
