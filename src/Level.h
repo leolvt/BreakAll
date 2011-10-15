@@ -12,7 +12,7 @@ namespace BreakAll {
 class Level: public Drawable
 {
     public:
-        Level(Area levelArea);
+        Level(Area totalArea);
         ~Level();
         void update();
         void draw();

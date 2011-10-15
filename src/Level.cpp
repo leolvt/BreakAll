@@ -5,8 +5,19 @@ namespace BreakAll {
 
 // ========================== //
 
-Level::Level(Area levelArea)
+Level::Level(Area totalArea)
 {
+    // Calculate the height of the InfoBar
+    float infoHeight = (totalArea.top - totalArea.bottom) * 0.1;
+
+    // Assign level area, without the info bar
+    this->levelArea = totalArea;
+    this->levelArea.bottom += infoHeight;
+
+    // Assign Info Bar area
+    levelInfoArea = totalArea;
+    levelInfoArea.top = totalArea.bottom + infoHeight;
+
     Area paddleSize;
     paddleSize.top = 0.05;
     paddleSize.bottom = -0.05;
@@ -19,17 +30,6 @@ Level::Level(Area levelArea)
     
     paddle = new Paddle(paddleSize, levelArea, startPosPaddle);
     
-    // Calculate the height of the InfoBar
-    float infoHeight = (levelArea.top - levelArea.bottom) * 0.1;
-
-    // Assign level area, without the info bar
-    this->levelArea = levelArea;
-    this->levelArea.bottom += infoHeight;
-
-    // Assign Info Bar area
-    levelInfoArea = levelArea;
-    levelInfoArea.top = levelArea.bottom + infoHeight;
-
     // Create the ball
     this->ball = new Ball(0,0, 0.05, this->levelArea);
 
