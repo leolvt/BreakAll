@@ -59,134 +59,16 @@ void Ball::draw()
 
 // ========================== //
 
-void Ball::checkCollisionWithPaddle(Paddle * paddle)
-{
-    Position ballPosition;
-    ballPosition.x = X;
-    ballPosition.y = Y;
-    
-    if (paddle->checkCollision(ballPosition))
-    {
-        //Inverts the ball's speed on Y if it touches the paddle
-        velY *= -1;
-    }
-}
-
-// ========================== //
-
-void Ball::checkCollisionWithBrick(Brick& brick)
-{
-    // Get brick area
-    Area brickArea = brick.getDelimitedArea();
-
-    // Retrieve old position
-    Position old = {X-velX, Y-velY};
-
-    // We wiil store the normal here
-    glm::vec2 normal;
-
-    // Check for collision on top or bottom
-    if (brickArea.left <= X && X <= brickArea.right)
-    {
-        // Bottom collision
-        if (Y+radius >= brickArea.bottom && 
-            old.y + radius < brickArea.bottom)
-        {
-            normal = glm::normalize( glm::vec2(0,-1) );
-            Y = brickArea.bottom - radius;
-        }
-        
-        // Top collision
-        else if (Y-radius <= brickArea.top && 
-            old.y-radius > brickArea.top)
-        {
-            normal = glm::normalize( glm::vec2(0,1) );
-            Y = brickArea.top + radius;
-        }
-    }
-    
-    // Check for collision on left or right
-    else if (brickArea.top >= Y && Y >= brickArea.bottom)
-    {
-        // Left collision
-        if (X+radius >= brickArea.left && 
-            old.x + radius < brickArea.left)
-        {
-            normal = glm::normalize( glm::vec2(-1,0) );
-            X = brickArea.left - radius;
-        }
-        
-        // Right collision
-        else if (X-radius <= brickArea.right && 
-            old.x-radius > brickArea.right)
-        {
-            normal = glm::normalize( glm::vec2(1,0) );
-            X = brickArea.right + radius;
-        }
-    }
-
-    // Corner Collision
-    else 
-    {
-        // Compute position correction factor
-        float corr = glm::sqrt(2.0)/2*radius;
-
-        // Compute corner distances
-        float distBL = (brickArea.left - X)*(brickArea.left - X) + 
-                       (brickArea.bottom - Y)*(brickArea.bottom - Y);
-        float distBR = (brickArea.right - X)*(brickArea.right - X) +
-                       (brickArea.bottom - Y)*(brickArea.bottom - Y);
-        float distTR = (brickArea.right - X)*(brickArea.right - X) +
-                       (brickArea.top - Y)*(brickArea.top - Y);
-        float distTL = (brickArea.left - X)*(brickArea.left - X) + 
-                       (brickArea.top - Y)*(brickArea.top - Y);
-
-        // Check corner collision - Bottom Left
-        if (distBL <= radius*radius) 
-        {
-            X = brickArea.left-corr;
-            Y = brickArea.bottom-corr;
-            normal = glm::normalize(glm::vec2(-1,-1));
-        }
-        // Check corner collision - Bottom Right
-        else if (distBR <= radius*radius) 
-        {
-            X = brickArea.right + corr;
-            Y = brickArea.bottom - corr;
-            normal = glm::normalize(glm::vec2(1,-1));
-        }
-        // Check corner collision - Top Left
-        else if (distTL <= radius*radius) 
-        {
-            X = brickArea.left - corr;
-            Y = brickArea.top + corr;
-            normal = glm::normalize(glm::vec2(-1,1));
-        }
-        // Check corner collision - Top Right
-        else if (distTR <= radius*radius) 
-        {
-            X = brickArea.right + corr;
-            Y = brickArea.top + corr;
-            normal = glm::normalize(glm::vec2(1,1));
-        }
-    }
-
-    // Reflect the velocity
-    glm::vec2 velIn = glm::vec2(velX, velY);
-    glm::vec2 velOut = glm::reflect( velIn, normal);
-    velX = velOut.x;
-    velY = velOut.y;
-}
-
-// ========================== //
-
-void Ball::checkCollisionWithArea(Area area)
+bool Ball::collidesWithArea(Area area)
 {
     // Retrieve old position
     Position old = {X-velX, Y-velY};
 
     // We wiil store the normal here
     glm::vec2 normal;
+
+    // Store if we collided or not
+    bool collided = false;
 
     // Check for collision on top or bottom
     if (area.left <= X && X <= area.right)
@@ -197,6 +79,7 @@ void Ball::checkCollisionWithArea(Area area)
         {
             normal = glm::normalize( glm::vec2(0,-1) );
             Y = area.bottom - radius;
+            collided = true;
         }
         
         // Top collision
@@ -205,6 +88,7 @@ void Ball::checkCollisionWithArea(Area area)
         {
             normal = glm::normalize( glm::vec2(0,1) );
             Y = area.top + radius;
+            collided = true;
         }
     }
     
@@ -217,6 +101,7 @@ void Ball::checkCollisionWithArea(Area area)
         {
             normal = glm::normalize( glm::vec2(-1,0) );
             X = area.left - radius;
+            collided = true;
         }
         
         // Right collision
@@ -225,6 +110,7 @@ void Ball::checkCollisionWithArea(Area area)
         {
             normal = glm::normalize( glm::vec2(1,0) );
             X = area.right + radius;
+            collided = true;
         }
     }
 
@@ -250,6 +136,7 @@ void Ball::checkCollisionWithArea(Area area)
             X = area.left-corr;
             Y = area.bottom-corr;
             normal = glm::normalize(glm::vec2(-1,-1));
+            collided = true;
         }
         // Check corner collision - Bottom Right
         else if (distBR <= radius*radius) 
@@ -257,6 +144,7 @@ void Ball::checkCollisionWithArea(Area area)
             X = area.right + corr;
             Y = area.bottom - corr;
             normal = glm::normalize(glm::vec2(1,-1));
+            collided = true;
         }
         // Check corner collision - Top Left
         else if (distTL <= radius*radius) 
@@ -264,6 +152,7 @@ void Ball::checkCollisionWithArea(Area area)
             X = area.left - corr;
             Y = area.top + corr;
             normal = glm::normalize(glm::vec2(-1,1));
+            collided = true;
         }
         // Check corner collision - Top Right
         else if (distTR <= radius*radius) 
@@ -271,15 +160,20 @@ void Ball::checkCollisionWithArea(Area area)
             X = area.right + corr;
             Y = area.top + corr;
             normal = glm::normalize(glm::vec2(1,1));
+            collided = true;
         }
     }
 
-    // Reflect the velocity
-    glm::vec2 velIn = glm::vec2(velX, velY);
-    glm::vec2 velOut = glm::reflect( velIn, normal);
-    velX = velOut.x;
-    velY = velOut.y;
+    // Reflect the velocity in the case of a collision
+    if (collided)
+    {
+        glm::vec2 velIn = glm::vec2(velX, velY);
+        glm::vec2 velOut = glm::reflect( velIn, normal);
+        velX = velOut.x;
+        velY = velOut.y;
+    }
 
+    return collided;
 }
 
 // ========================== //

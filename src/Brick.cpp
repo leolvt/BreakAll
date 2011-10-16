@@ -11,6 +11,7 @@ Brick::Brick(Position p, float width, float height)
     this->brickArea.right = p.x + width/2;
     this->brickArea.bottom = p.y - height/2;
     this->brickArea.left = p.x - width/2;
+    this->alive = true;
 }
 
 // ========================== //
@@ -31,6 +32,8 @@ void Brick::update()
 
 void Brick::draw()
 {
+    if (!alive) return;
+
     // Draw a rectangular brick
     glBegin(GL_QUADS);
         glColor3f(1, 0.75, 0);
@@ -49,6 +52,25 @@ Area Brick::getDelimitedArea()
 }
 
 // ========================== //
+
+void Brick::die()
+{
+    this->alive = false;
+}
+
+// ========================== //
+
+void Brick::live()
+{
+    this->alive = true;
+}
+
+// ========================== //
+
+bool Brick::isAlive()
+{
+    return this->alive;
+}
 
 // ========================== //
 

@@ -19,9 +19,7 @@ class Ball: public Drawable
         void draw();
         void onKeyPressed(int key) {};
         void onMouseMove(float x, float y) {};
-        void checkCollisionWithPaddle(Paddle * paddle);
-        void checkCollisionWithBrick(Brick& brick);
-        void checkCollisionWithArea(Area area);
+        bool collidesWithArea(Area area);
 
     private:
         Area levelArea;

@@ -78,10 +78,18 @@ void Level::update()
 
     paddle->update();
     ball->update();
+    bool noMoreBricks = true;
     for (auto brick = bricks.begin(); brick != bricks.end(); brick++) {
-        ball->checkCollisionWithArea(brick->getDelimitedArea());
+        if ( !brick->isAlive() ) continue;
+        if ( ball->collidesWithArea(brick->getDelimitedArea()) )
+        {
+            brick->die();
+        }
+        noMoreBricks = false;
     }
-    ball->checkCollisionWithArea(paddle->getPaddleArea());
+    ball->collidesWithArea(paddle->getPaddleArea());
+
+    if (noMoreBricks) paused = true;
 }
 
 // ========================== //

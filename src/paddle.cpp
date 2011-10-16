@@ -147,20 +147,4 @@ namespace BreakAll{
 
 // ========================== //
 
-    bool Paddle::checkCollision(Position position)
-    {
-        //Checks if the position in the argument is inside the paddle
-        if (position.x > paddleSize.left + this->position.x && position.x < paddleSize.right + this->position.x &&
-            position.y > paddleSize.bottom + this->position.y && position.y < paddleSize.top + this->position.y)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-    
-// ========================== //
-
 }; // namespace BreakAll
