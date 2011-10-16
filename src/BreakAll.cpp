@@ -1,7 +1,7 @@
 #include <set>
 
 #include "BreakAll.h"
-#include "Drawable.h"
+#include "Mode.h"
 #include "GameMode.h"
 
 namespace BreakAll 
@@ -18,7 +18,7 @@ namespace
     // These control the current status
     bool isInitialized = false;
     int modeCode = 0;
-    Drawable* currentMode = 0;
+    Mode* currentMode = 0;
     int width = 0;
     int height = 0;
     float aspectRatio = 0;
@@ -26,7 +26,7 @@ namespace
     std::set<int> pressedKeys;
 
     // Here we store the available modes
-    Drawable* gameMode = 0;
+    Mode* gameMode = 0;
 };
 
 // ========================== //

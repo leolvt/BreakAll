@@ -12,7 +12,7 @@ class Paddle: public Drawable
     public:
         Paddle(Area levelArea, Area levelInfoArea);
         ~Paddle();
-        void update();
+        void step();
         void draw();
         virtual void onKeyPressed(int key);
         virtual void onMouseMove(float x, float y);

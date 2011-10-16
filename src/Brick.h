@@ -12,7 +12,7 @@ class Brick: public Drawable
     public:
         Brick(Position p, float width, float length);
         ~Brick();
-        void update();
+        void step();
         void draw();
         void onKeyPressed(int key) {};
         void onMouseMove(float x, float y) {};

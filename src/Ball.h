@@ -15,7 +15,7 @@ class Ball: public Drawable
 {
     public:
         Ball(float x, float y, float radius, Area levelArea);
-        void update();
+        void step();
         void draw();
         void onKeyPressed(int key) {};
         void onMouseMove(float x, float y) {};

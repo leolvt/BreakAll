@@ -53,6 +53,7 @@ GameMode::GameMode(Area gameArea)
 
     // Start at level 1
     this->gameOver = false;
+    this->paused = true;
     this->currLevel = 1;
     this->level = new Level(levelArea);
 }
@@ -68,23 +69,48 @@ GameMode::~GameMode()
 
 // ========================== //
 
+void GameMode::reset()
+{
+    // We start with 3 lives
+    this->numLives = 3;
+    this->numPoints = 0;
+
+    // Start at level 1
+    this->gameOver = false;
+    this->paused = true;
+    this->currLevel = 1;
+    if (level != 0) delete level;
+    this->level = new Level(levelArea);
+}
+
+// ========================== //
+
 void GameMode::update()
 {
-    // Update level
-    level->update();
+    if (!gameOver && !paused) step();
+}
+
+// ========================== //
+
+void GameMode::step()
+{
+    // Step the level level
+    level->step();
 
     // If we have failed, check if we have another life
     if (!level->isAlive())
     {
         // We have more lives
-        if (numLives > 0) 
+        if (numLives > 1) 
         {
             this->numLives--;
             level->resetBalls();
             level->live();
+            paused = true;
         }
         else
         {
+            numLives = 0;
             this->gameOver = true;
         }
     }
@@ -92,12 +118,9 @@ void GameMode::update()
 
 // ========================== //
 
-void GameMode::draw()
+void GameMode::drawTopBar()
 {
-    // Draw the Level
-    level->draw();
-
-    // Draw the top bar
+    // Draw the top bar background
     glBegin(GL_QUADS);
         glColor3f(0.5, 0.5, 0.9);
         glVertex2f(infoArea.left, infoArea.top);
@@ -130,7 +153,20 @@ void GameMode::draw()
     fontPos.y = (infoArea.top + infoArea.bottom)/2;   
     mono26->setVerticalJustification(OGLFT::Face::MIDDLE);
     mono26->draw(fontPos.x, fontPos.y, levelStr.c_str());
+    mono26->setVerticalJustification(OGLFT::Face::BASELINE);
+}
 
+// ========================== //
+
+void GameMode::draw()
+{
+    // Draw the Level
+    level->draw();
+
+    // Draw the top Bar
+    drawTopBar();
+
+    // Handle GameOver drawing
     if (gameOver)
     {
         glEnable(GL_BLEND);
@@ -144,8 +180,32 @@ void GameMode::draw()
         glEnd();
         glDisable(GL_BLEND);
 
+        glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+        mono26->setForegroundColor(0,0,0);
         mono26->setHorizontalJustification(OGLFT::Face::CENTER);
         mono26->draw(0,0, "GAME OVER!!! :(");
+        mono26->setHorizontalJustification(OGLFT::Face::ORIGIN);
+    }
+
+    // If paused, show a message on the screen
+    else if (paused)
+    {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBegin(GL_QUADS);
+           glColor4f(0.5, 0.5, 0.5, 0.5); 
+           glVertex2f(levelArea.left, levelArea.top);
+           glVertex2f(levelArea.right, levelArea.top);
+           glVertex2f(levelArea.right, levelArea.bottom);
+           glVertex2f(levelArea.left, levelArea.bottom);
+        glEnd();
+        glDisable(GL_BLEND);
+
+        glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+        mono26->setForegroundColor(0,0,0);
+        mono26->setHorizontalJustification(OGLFT::Face::CENTER);
+        mono26->draw(0,0, "PAUSED");
+        mono26->setHorizontalJustification(OGLFT::Face::ORIGIN);
     }
 }
 
@@ -153,9 +213,17 @@ void GameMode::draw()
 
 void GameMode::onKeyPressed(int key)
 {
+    // 'Q' or ESC for Quit
     if (key == 'Q' || key == GLFW_KEY_ESC) BreakAll::stop();
-    if (key == 'R') level->resetBalls();
-    level->onKeyPressed(key);
+
+    // 'R' for reset
+    if (key == 'R') reset();
+
+    // 'P' for pause
+    if (key == 'P') paused = !paused;
+
+    // If not paused nor gameover, propagate.
+    if (!paused && !gameOver) level->onKeyPressed(key);
 }
 
 // ========================== //
@@ -163,7 +231,7 @@ void GameMode::onKeyPressed(int key)
 void GameMode::onMouseMove(float x, float y)
 {
 //    std::cout << "Mouse at: (" << x << ", " << y << ")" << std::endl;
-    level->onMouseMove(x, y);
+    if (!paused && !gameOver) level->onMouseMove(x, y);
 }
 
 // ========================== //

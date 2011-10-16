@@ -17,18 +17,17 @@ class Level: public Drawable
     public:
         Level(Area totalArea);
         ~Level();
-        void update();
         void draw();
-        void onKeyPressed(int key);
-        void onMouseMove(float x, float y);
+        void step();
         Area getLevelArea();
         void resetBalls();
         bool isAlive();
         void live();
+        void onKeyPressed(int key);
+        void onMouseMove(float x, float y);
     private:
         Area levelArea;
         Area levelInfoArea;
-		bool paused;
 		bool alive;
         Paddle * paddle;
         Ball* ball;

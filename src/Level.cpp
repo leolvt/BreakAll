@@ -35,8 +35,8 @@ Level::Level(Area totalArea)
     // Create the ball
     this->ball = new Ball(0,-0.1, 0.05, this->levelArea);
 
-    // Create bricks (4x5)
-    int numCols = 5; int numRows = 4;
+    // Create bricks (6x8)
+    int numCols = 8; int numRows = 6;
     float levelHeight = levelArea.top - levelArea.bottom;
     float levelWidth = levelArea.right - levelArea.left;
     float brickWidth = levelWidth*0.9 / numCols;
@@ -55,9 +55,8 @@ Level::Level(Area totalArea)
         }
     }
 
-    // Start the game paused
+    // Start the game 
     alive = true;
-    paused = true;
 }
 
 // ========================== //
@@ -69,18 +68,16 @@ Level::~Level()
         delete ball;
         ball = 0;
     }   
+    bricks.clear();
 }
 
 // ========================== //
 
-void Level::update()
+void Level::step()
 {
-    // Don't update when paused
-    if (paused) return;
-
     // Update paddle, ball and bricks
-    paddle->update();
-    ball->update();
+    paddle->step();
+    ball->step();
     bool noMoreBricks = true;
     for (auto brick = bricks.begin(); brick != bricks.end(); brick++) {
         if ( !brick->isAlive() ) continue;
@@ -93,13 +90,15 @@ void Level::update()
     ball->collidesWithArea(paddle->getPaddleArea());
 
     // Check if we destroyed all bricks
-    if (noMoreBricks) paused = true;
+    // HANDLE levelCleared
+//    if (noMoreBricks) paused = true;
 
     // Check if the ball has fallen
     if (!ball->isValid()) 
     {
         this->alive = false;
     }
+
 }
 
 // ========================== //
@@ -122,44 +121,21 @@ void Level::draw()
         glVertex2f(levelInfoArea.right, levelInfoArea.bottom);
         glVertex2f(levelInfoArea.left, levelInfoArea.bottom);
     glEnd();
-    
+
+    // Draw the paddle
     paddle->draw();
-
-
-    // If paused, show a message on the screen
-    if (paused)
-    {
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glBegin(GL_QUADS);
-           glColor4f(0.5, 0.5, 0.5, 0.5); 
-           glVertex2f(levelArea.left, levelArea.top);
-           glVertex2f(levelArea.right, levelArea.top);
-           glVertex2f(levelArea.right, levelArea.bottom);
-           glVertex2f(levelArea.left, levelArea.bottom);
-        glEnd();
-        glDisable(GL_BLEND);
-
-        OGLFT::Monochrome* f = new OGLFT::Monochrome(
-            "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono.ttf",
-            26
-        );
-        f->setHorizontalJustification(OGLFT::Face::CENTER);
-        f->draw(0,0, "PAUSED");
-    }
 }
 
 // ========================== //
 
 void Level::onKeyPressed(int key)
 {
-    if (key == 'P')
-    {
-        paused = !paused;
-    }
-
     paddle->onKeyPressed(key);
     ball->onKeyPressed(key);
+    for (auto brick = bricks.begin(); brick != bricks.end(); brick++)
+    {
+        brick->onKeyPressed(key);
+    }
 }
 
 // ========================== //
@@ -168,6 +144,10 @@ void Level::onMouseMove(float x, float y)
 {
     paddle->onMouseMove(x, y);
     ball->onMouseMove(x, y);
+    for (auto brick = bricks.begin(); brick != bricks.end(); brick++)
+    {
+        brick->onMouseMove(x, y);
+    }
 }
 
 // ========================== //

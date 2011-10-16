@@ -16,7 +16,7 @@ Ball::Ball(float x, float y, float radius, Area levelArea)
 
 // ========================== //
 
-void Ball::update()
+void Ball::step()
 {
     // Increase Position
     X += velX;

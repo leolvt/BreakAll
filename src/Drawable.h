@@ -1,5 +1,5 @@
-#ifndef MODE_H_INCLUDED
-#define MODE_H_INCLUDED
+#ifndef DRAWABLE_H_INCLUDED
+#define DRAWABLE_H_INCLUDED
 
 #include <GL/glew.h>
 #include <GL/glfw.h>
@@ -31,7 +31,7 @@ typedef struct
 class Drawable
 {
     public:
-        virtual void update() = 0;
+        virtual void step() = 0;
         virtual void draw() = 0;
         virtual void onKeyPressed(int key) = 0;
         virtual void onMouseMove(float x, float y) = 0;
@@ -41,5 +41,5 @@ class Drawable
 
 }; // namespace BreakAll
 
-#endif  /* MODE_H_INCLUDED */
+#endif  /* DRAWABLE_H_INCLUDED */
 

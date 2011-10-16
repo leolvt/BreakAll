@@ -23,7 +23,7 @@ Brick::~Brick()
 
 // ========================== //
 
-void Brick::update()
+void Brick::step()
 {
 
 }
