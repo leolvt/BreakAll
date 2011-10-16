@@ -6,6 +6,7 @@ set(BREAKALL_SRC
     Level.cpp
     GameMode.cpp
     BreakAll.cpp
+    Util.cpp
     main.cpp
 )
 

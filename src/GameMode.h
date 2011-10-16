@@ -21,8 +21,12 @@ class GameMode: public Drawable
         Area gameArea;
         Area levelArea;
         Area infoArea;
-        OGLFT::Monochrome *face;
         Drawable* level;
+        OGLFT::Monochrome* mono13;
+        OGLFT::Monochrome* mono26;
+        int numLives;
+        int numPoints;
+        int currLevel;
 };
 
 // ========================== //
