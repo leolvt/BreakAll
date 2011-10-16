@@ -28,7 +28,7 @@ Level::Level(Area totalArea)
     startPosPaddle.x = (levelArea.left + levelArea.right)/2;
     startPosPaddle.y = levelArea.bottom + 0.06;
     
-    paddle = new Paddle(paddleSize, levelArea, startPosPaddle);
+    paddle = new Paddle(levelArea);
     
     // Create the ball
     this->ball = new Ball(0,0, 0.05, this->levelArea);
@@ -55,6 +55,7 @@ void Level::update()
     if (paused) return;
 
     paddle->update();
+    ball->checkCollisionWithPaddle(paddle);
     ball->update();
 }
 
@@ -92,7 +93,7 @@ void Level::draw()
         glDisable(GL_BLEND);
 
         OGLFT::Monochrome* f = new OGLFT::Monochrome(
-            "DejaVuSansMono.ttf",
+            "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono.ttf",
             26
         );
         f->setHorizontalJustification(OGLFT::Face::CENTER);

@@ -58,6 +58,19 @@ void Ball::draw()
 
 // ========================== //
 
+void Ball::checkCollisionWithPaddle(Paddle * paddle)
+{
+    Position ballPosition;
+    ballPosition.x = X;
+    ballPosition.y = Y;
+    
+    if (paddle->checkCollision(ballPosition))
+    {
+        //Inverts the ball's speed on Y if it touches the paddle
+        velY *= -1;
+    }
+}
+
 // ========================== //
 
 }; // namespace BreakAll

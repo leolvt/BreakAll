@@ -2,6 +2,8 @@
 #define BALL_H_INCLUDED
 
 #include "Drawable.h"
+#include "paddle.h"
+
 
 class Level;
 
@@ -17,6 +19,7 @@ class Ball: public Drawable
         void draw();
         void onKeyPressed(int key) {};
         void onMouseMove(float x, float y) {};
+        void checkCollisionWithPaddle(Paddle * paddle);
 
     private:
         Area levelArea;
