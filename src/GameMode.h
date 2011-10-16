@@ -13,13 +13,14 @@ class GameMode: public Mode
     public:
         GameMode(Area gameArea);
         ~GameMode();
+        void step();
+        void reset();
         void update();
         void draw();
         void drawTopBar();
         void onKeyPressed(int key);
         void onMouseMove(float x, float y);
-        void step();
-        void reset();
+        void onMouseButton(int button);
     
     private:
         Area gameArea;

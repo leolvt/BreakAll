@@ -236,4 +236,14 @@ void GameMode::onMouseMove(float x, float y)
 
 // ========================== //
 
+void GameMode::onMouseButton(int button)
+{
+    if (button == GLFW_MOUSE_BUTTON_LEFT)
+    {
+        paused = !paused;
+    }
+}
+
+// ========================== //
+
 }; // namespace BreakAll

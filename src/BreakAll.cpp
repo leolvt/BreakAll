@@ -24,6 +24,7 @@ namespace
     float aspectRatio = 0;
     bool running = false;
     std::set<int> pressedKeys;
+    std::set<int> pressedButtons;
 
     // Here we store the available modes
     Mode* gameMode = 0;
@@ -50,6 +51,7 @@ void initialize(int windowWidth, int windowHeight)
     glfwOpenWindow(windowWidth,windowHeight, 8,8,8,0, 0,0, GLFW_WINDOW);
     glfwSetKeyCallback( BreakAll::keyCallback );
     glfwSetMousePosCallback( BreakAll::mouseCallback );
+    glfwSetMouseButtonCallback( BreakAll::mouseButtonCallback );
     glewInit();
     width = windowWidth; height = windowHeight;
 
@@ -189,6 +191,29 @@ void mouseCallback(int x, int y)
 
     // Dispatch event to current mode
     currentMode->onMouseMove(glXpos, glYpos);
+}
+
+// ========================== //
+
+void mouseButtonCallback(int button, int status)
+{
+    // Check if we are running and dispatch event to current mode
+    if (!isInitialized) return;
+
+    // Try to find the button in the set of currently pressed buttons
+    std::set<int>::iterator buttonPos = pressedButtons.find(button);
+    
+    // Add a new button if this is the first time it is pressed
+    if (buttonPos == pressedButtons.end() && status == GLFW_PRESS)
+    {
+        pressedButtons.insert(button);
+    }
+    // Remove a button that was pressed and dispatch the event
+    else if (buttonPos != pressedButtons.end() && status == GLFW_RELEASE)
+    {
+        pressedButtons.erase(buttonPos);
+        currentMode->onMouseButton(button);
+    }
 }
 
 // ========================== //

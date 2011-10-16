@@ -11,6 +11,7 @@ class Mode: public Drawable
 {
     public:
         virtual void update() = 0;
+        virtual void onMouseButton(int button) = 0;
 };
 
 // ========================== //

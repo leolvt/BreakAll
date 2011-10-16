@@ -17,6 +17,7 @@ namespace BreakAll
     void changeMode(int NewMode);
     void keyCallback(int Key, int Status);
     void mouseCallback(int x, int y);
+    void mouseButtonCallback(int button, int status);
     void terminate();
 };
 
