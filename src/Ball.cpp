@@ -185,6 +185,13 @@ bool Ball::collidesWithArea(Area area)
 
 // ========================== //
 
+bool Ball::updateSpeedFromPaddle(float paddleSpeed)
+{
+    velX += paddleSpeed*0.2;
+}
+
+// ========================== //
+
 bool Ball::isValid()
 {
     return valid;

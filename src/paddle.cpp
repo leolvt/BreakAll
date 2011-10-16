@@ -149,6 +149,13 @@ Area Paddle::getPaddleArea()
 
 // ========================== //
 
+float Paddle::getPaddleSpeed()
+{
+    return paddleSpeed;
+}
+
+// ========================== //
+
 void Paddle::reset()
 {
     position.x = (levelArea.left + levelArea.right)/2;

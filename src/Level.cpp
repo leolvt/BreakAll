@@ -87,7 +87,11 @@ void Level::step()
         }
         noMoreBricks = false;
     }
-    ball->collidesWithArea(paddle->getPaddleArea());
+    bool collidedPaddle = ball->collidesWithArea(paddle->getPaddleArea());
+    if (collidedPaddle)
+    {
+        ball->updateSpeedFromPaddle(paddle->getPaddleSpeed());
+    }
 
     // Check if we destroyed all bricks
     // HANDLE levelCleared

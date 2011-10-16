@@ -15,6 +15,7 @@ class Paddle: public Drawable
         void step();
         void draw();
         Area getPaddleArea();
+        float getPaddleSpeed();
         void print();
         void reset();
         virtual void onKeyPressed(int key);
