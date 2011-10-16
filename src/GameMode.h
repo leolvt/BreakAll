@@ -18,6 +18,7 @@ class GameMode: public Mode
         void update();
         void draw();
         void drawTopBar();
+        void print();
         void onKeyPressed(int key);
         void onMouseMove(float x, float y);
         void onMouseButton(int button);

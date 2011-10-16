@@ -17,10 +17,11 @@ class Ball: public Drawable
         Ball(float x, float y, float radius, Area levelArea);
         void step();
         void draw();
-        void onKeyPressed(int key) {};
-        void onMouseMove(float x, float y) {};
+        void print();
         bool collidesWithArea(Area area);
         bool isValid();
+        void onKeyPressed(int key) {};
+        void onMouseMove(float x, float y) {};
 
     private:
         bool valid;

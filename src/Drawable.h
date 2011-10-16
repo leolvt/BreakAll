@@ -33,6 +33,7 @@ class Drawable
     public:
         virtual void step() = 0;
         virtual void draw() = 0;
+        virtual void print() = 0;
         virtual void onKeyPressed(int key) = 0;
         virtual void onMouseMove(float x, float y) = 0;
 };

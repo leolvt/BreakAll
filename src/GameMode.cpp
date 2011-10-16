@@ -105,6 +105,7 @@ void GameMode::step()
         {
             this->numLives--;
             level->resetBalls();
+            level->resetPaddle();
             level->live();
             paused = true;
         }
@@ -211,6 +212,22 @@ void GameMode::draw()
 
 // ========================== //
 
+void GameMode::print()
+{
+    std::cout << "==================================" << std::endl;
+    std::cout << "BreakAll -> Game Mode!" << std::endl;
+    std::cout << "----------------------" << std::endl;
+    std::cout << "> Current Level: " << this->currLevel << std::endl;
+    std::cout << "> Number of Lives: " << this->numLives << std::endl;
+    std::cout << "> Number of Points: " << this->numPoints << std::endl;
+    std::cout << "----------------------" << std::endl;
+    this->level->print();
+    std::cout << "==================================" << std::endl;
+    std::cout << std::endl;
+}
+
+// ========================== //
+
 void GameMode::onKeyPressed(int key)
 {
     // 'Q' or ESC for Quit
@@ -241,6 +258,12 @@ void GameMode::onMouseButton(int button)
     if (button == GLFW_MOUSE_BUTTON_LEFT)
     {
         paused = !paused;
+    }
+    else if (button == GLFW_MOUSE_BUTTON_RIGHT)
+    {
+        paused = true;
+        step();
+        print();
     }
 }
 

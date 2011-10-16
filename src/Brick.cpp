@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "Brick.h"
 
 namespace BreakAll {
@@ -70,6 +72,16 @@ void Brick::live()
 bool Brick::isAlive()
 {
     return this->alive;
+}
+
+// ========================== //
+
+void Brick::print()
+{
+    std::cout << ">> Is Alive? " << this->alive << std::endl;
+    std::cout << ">>> Position: ("<< pos.x <<", "<< pos.y <<")"<< std::endl;
+    std::cout << ">>> Size: "<< width <<"x"<< height << std::endl;
+    std::cout << "----------------------" << std::endl;
 }
 
 // ========================== //

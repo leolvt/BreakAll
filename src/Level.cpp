@@ -167,6 +167,13 @@ void Level::resetBalls()
 
 // ========================== //
 
+void Level::resetPaddle()
+{
+    paddle->reset();
+}
+
+// ========================== //
+
 bool Level::isAlive()
 {
     return this->alive;
@@ -177,6 +184,38 @@ bool Level::isAlive()
 void Level::live()
 {
     this->alive = true;
+}
+
+// ========================== //
+
+void Level::print()
+{
+    // Compute Valid Bricks
+    int validBricks  = 0;
+    for (auto brick = bricks.begin(); brick != bricks.end(); brick++)
+    {
+        if (brick->isAlive()) validBricks++;
+    }
+
+    std::cout << "Level Info" << std::endl;
+    std::cout << "----------------------" << std::endl;
+    std::cout << ">> Is Alive? " << this->alive << std::endl;
+    std::cout << ">> Num of Bricks: " << this->bricks.size() << std::endl;
+    std::cout << ">> Num of Valid Bricks: " << validBricks << std::endl;
+    std::cout << "----------------------" << std::endl;
+    std::cout << "Paddle Info" << std::endl;
+    std::cout << "----------------------" << std::endl;
+    this->paddle->print();
+    std::cout << "Ball Info" << std::endl;
+    std::cout << "----------------------" << std::endl;
+    this->ball->print();
+    int idx = 1;
+    for (auto brick = bricks.begin(); brick != bricks.end(); brick++)
+    {
+        std::cout << "Brick #" << idx++ << " Info" << std::endl;
+        std::cout << "----------------------" << std::endl;
+        brick->print();
+    }
 }
 
 // ========================== //

@@ -14,9 +14,11 @@ class Paddle: public Drawable
         ~Paddle();
         void step();
         void draw();
+        Area getPaddleArea();
+        void print();
+        void reset();
         virtual void onKeyPressed(int key);
         virtual void onMouseMove(float x, float y);
-        Area getPaddleArea();
     private:
         Area levelArea;
         

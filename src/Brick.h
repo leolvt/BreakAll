@@ -14,12 +14,13 @@ class Brick: public Drawable
         ~Brick();
         void step();
         void draw();
-        void onKeyPressed(int key) {};
-        void onMouseMove(float x, float y) {};
         Area getDelimitedArea();
         void die();
         void live();
         bool isAlive();
+        void print();
+        void onKeyPressed(int key) {};
+        void onMouseMove(float x, float y) {};
     private:
         Position pos;
         Area brickArea;

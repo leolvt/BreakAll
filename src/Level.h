@@ -21,8 +21,10 @@ class Level: public Drawable
         void step();
         Area getLevelArea();
         void resetBalls();
+        void resetPaddle();
         bool isAlive();
         void live();
+        void print();
         void onKeyPressed(int key);
         void onMouseMove(float x, float y);
     private:

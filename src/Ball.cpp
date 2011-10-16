@@ -192,4 +192,14 @@ bool Ball::isValid()
 
 // ========================== //
 
+void Ball::print()
+{
+    std::cout << ">>> Radius: " << this->radius << std::endl;
+    std::cout << ">>> Position: (" << X << ", " << Y << ")" << std::endl;
+    std::cout << ">>> Speed: (" << velX << ", " << velY << ")" << std::endl;
+    std::cout << "----------------------" << std::endl;
+}
+
+// ========================== //
+
 }; // namespace BreakAll

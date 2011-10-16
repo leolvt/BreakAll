@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "paddle.h"
 
 namespace BreakAll{
@@ -143,6 +145,26 @@ Area Paddle::getPaddleArea()
         position.x + paddleSize.left
     };
     return paddleArea;
+}
+
+// ========================== //
+
+void Paddle::reset()
+{
+    position.x = (levelArea.left + levelArea.right)/2;
+    position.y = levelArea.bottom + 0.06;
+    paddleSpeed = 0;
+    paddleMovementMeter.left = paddleMovementMeter.right = paddleMovementBarPos.x;
+}
+
+// ========================== //
+
+void Paddle::print()
+{
+    std::cout << ">>> Position: (" 
+        << position.x << ", " << position.y << ")" << std::endl;
+    std::cout << ">>> Velocity: " << this->paddleSpeed << std::endl;
+    std::cout << "----------------------" << std::endl;
 }
 
 // ========================== //
