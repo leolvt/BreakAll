@@ -133,6 +133,20 @@ namespace BreakAll{
     
 // ========================== //
 
+    Area Paddle::getPaddleArea()
+    {
+        Area paddleArea = 
+        {
+            position.y + paddleSize.top,
+            position.x + paddleSize.right,
+            position.y + paddleSize.bottom,
+            position.x + paddleSize.left
+        };
+        return paddleArea;
+    }
+
+// ========================== //
+
     bool Paddle::checkCollision(Position position)
     {
         //Checks if the position in the argument is inside the paddle

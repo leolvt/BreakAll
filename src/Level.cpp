@@ -79,9 +79,9 @@ void Level::update()
     paddle->update();
     ball->update();
     for (auto brick = bricks.begin(); brick != bricks.end(); brick++) {
-        ball->checkCollisionWithBrick(*brick);
+        ball->checkCollisionWithArea(brick->getDelimitedArea());
     }
-    ball->checkCollisionWithPaddle(paddle);
+    ball->checkCollisionWithArea(paddle->getPaddleArea());
 }
 
 // ========================== //

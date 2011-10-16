@@ -17,6 +17,7 @@ class Paddle: public Drawable
         virtual void onKeyPressed(int key);
         virtual void onMouseMove(float x, float y);
         bool checkCollision(Position position);
+        Area getPaddleArea();
     private:
         Area levelArea;
         
