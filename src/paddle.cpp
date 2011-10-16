@@ -4,17 +4,30 @@ namespace BreakAll{
 
 // ========================== //
     
-    Paddle::Paddle(Area levelArea)
+    Paddle::Paddle(Area levelArea, Area levelInfoArea)
+        : levelArea(levelArea)
     {
-        paddleSize.top = 0.05;
-        paddleSize.bottom = -0.05;
+        paddleSize.top = 0.04;
+        paddleSize.bottom = -0.04;
         paddleSize.left = -0.5;
         paddleSize.right = 0.5;
         
         position.x = (levelArea.left + levelArea.right)/2;
         position.y = levelArea.bottom + 0.06;
         
-        lastMousePosition = (levelArea.left + levelArea.right)/2;
+        paddleMovementBarSize.top = 0.02;
+        paddleMovementBarSize.bottom = -0.02;
+        paddleMovementBarSize.left = -0.6;
+        paddleMovementBarSize.right = 0.6;
+        
+        paddleMovementBarPos.x = (levelInfoArea.left + levelInfoArea.right) / 2;
+        paddleMovementBarPos.y = levelInfoArea.top - 0.03;
+        
+        paddleMovementMeter = paddleMovementBarSize;
+        paddleMovementMeter.left = paddleMovementBarPos.x;
+        paddleMovementMeter.right = paddleMovementBarPos.x;
+        
+        paddleSpeed = 0;
     }
     
 // ========================== //
@@ -28,14 +41,17 @@ namespace BreakAll{
 
     void Paddle::update()
     {
-        //if ball touches paddle change ball's speed (?)
+        if (position.x + paddleSpeed > levelArea.left && position.x + paddleSpeed < levelArea.right)
+        {
+            position.x += paddleSpeed;   
+        }
     }
     
 // ========================== //
     
     void Paddle::draw()
     {
-        //desenha Paddle
+        //draws Paddle
         glBegin(GL_QUADS);
             glColor3f(1, 1, 1);
             glVertex2f(paddleSize.left + position.x, paddleSize.top + position.y);
@@ -44,7 +60,23 @@ namespace BreakAll{
             glVertex2f(paddleSize.left + position.x, paddleSize.bottom + position.y);
         glEnd();
         
+        //draws Bar of movement information
+        glBegin(GL_QUADS);
+            glColor3f(0.5, 0.5, 0.5);
+            glVertex2f(paddleMovementBarSize.left + paddleMovementBarPos.x, paddleMovementBarSize.top + paddleMovementBarPos.y);
+            glVertex2f(paddleMovementBarSize.right + paddleMovementBarPos.x, paddleMovementBarSize.top + paddleMovementBarPos.y);
+            glVertex2f(paddleMovementBarSize.right + paddleMovementBarPos.x, paddleMovementBarSize.bottom + paddleMovementBarPos.y);
+            glVertex2f(paddleMovementBarSize.left + paddleMovementBarPos.x, paddleMovementBarSize.bottom + paddleMovementBarPos.y);
+        glEnd();
         
+        //draws the bar that indicates the amount of speed of the paddle
+        glBegin(GL_QUADS);
+            glColor3f(0.9, 0.9, 0.9);
+            glVertex2f(paddleMovementMeter.left + paddleMovementBarPos.x, paddleMovementMeter.top + paddleMovementBarPos.y);
+            glVertex2f(paddleMovementMeter.right + paddleMovementBarPos.x, paddleMovementMeter.top + paddleMovementBarPos.y);
+            glVertex2f(paddleMovementMeter.right + paddleMovementBarPos.x, paddleMovementMeter.bottom + paddleMovementBarPos.y);
+            glVertex2f(paddleMovementMeter.left + paddleMovementBarPos.x, paddleMovementMeter.bottom + paddleMovementBarPos.y);
+        glEnd();
     }
     
 // ========================== //
@@ -65,7 +97,38 @@ namespace BreakAll{
     
     void Paddle::onMouseMove(float x, float y)
     {
+        if (x < paddleMovementBarPos.x)
+        {
+            if (x > paddleMovementBarSize.left)
+            {
+                paddleMovementMeter.left = x;
+            }
+            else
+            {
+                paddleMovementMeter.left = paddleMovementBarSize.left;
+            }
+            
+            paddleMovementMeter.right = paddleMovementBarPos.x;
+        }
+        else if (x > paddleMovementBarPos.x)
+        {
+            if (x < paddleMovementBarSize.right)
+            {
+                paddleMovementMeter.right = x;
+            }
+            else
+            {
+                paddleMovementMeter.right = paddleMovementBarSize.right;
+            }
+            
+            paddleMovementMeter.left = paddleMovementBarPos.x;
+        }
+        else
+        {
+            paddleMovementMeter.left = paddleMovementMeter.right = paddleMovementBarPos.x;
+        }
         
+        paddleSpeed = 0.2 * (paddleMovementMeter.left - paddleMovementBarPos.x + paddleMovementMeter.right - paddleMovementBarPos.x);
     }
     
 // ========================== //

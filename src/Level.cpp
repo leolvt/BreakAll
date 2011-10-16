@@ -27,7 +27,7 @@ Level::Level(Area totalArea)
     startPosPaddle.x = (levelArea.left + levelArea.right)/2;
     startPosPaddle.y = levelArea.bottom + 0.06;
     
-    paddle = new Paddle(levelArea);
+    paddle = new Paddle(levelArea, levelInfoArea);
     
     // Create the ball
     this->ball = new Ball(0,0, 0.05, this->levelArea);
