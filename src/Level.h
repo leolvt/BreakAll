@@ -1,6 +1,8 @@
 #ifndef LEVEL_H_INCLUDED
 #define LEVEL_H_INCLUDED
 
+#include <list>
+
 #include "Ball.h"
 #include "Brick.h"
 #include "Drawable.h"
@@ -26,7 +28,7 @@ class Level: public Drawable
 		bool paused;
         Paddle * paddle;
         Ball* ball;
-        Brick* brick;
+        std::list<Brick> bricks;
 };
 
 // ========================== //

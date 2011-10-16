@@ -1,6 +1,9 @@
 #include "Level.h"
 
+#include <iostream>
+
 namespace BreakAll {
+
 
 // ========================== //
 
@@ -30,11 +33,27 @@ Level::Level(Area totalArea)
     paddle = new Paddle(levelArea, levelInfoArea);
     
     // Create the ball
-    this->ball = new Ball(0,0, 0.05, this->levelArea);
+    this->ball = new Ball(0,-0.1, 0.05, this->levelArea);
 
-    // Create a new TEST brick
-    Position brickPos = {0,0}; 
-    this->brick = new Brick(brickPos, 0.2, 0.1);
+    // Create bricks (4x5)
+    int numCols = 5; int numRows = 4;
+    float levelHeight = levelArea.top - levelArea.bottom;
+    float levelWidth = levelArea.right - levelArea.left;
+    float brickWidth = levelWidth*0.9 / numCols;
+    float brickHeight = levelHeight*0.45 / numRows;
+    Position topLeft = {
+        levelArea.left + 0.05f*levelWidth,
+        levelArea.top - 0.05f*levelHeight
+    }; 
+
+    for (int i = 0; i < numRows; i++) {
+        for (int j = 0; j < numCols; j++) {
+            Position brickCenter = topLeft;
+            brickCenter.x += brickWidth*j + 0.5*brickWidth;
+            brickCenter.y -= brickHeight*i + 0.5*brickHeight;
+            bricks.push_back(Brick(brickCenter, brickWidth*0.75, brickHeight*0.75));
+        }
+    }
 
     // Start the game paused
     paused = true;
@@ -59,7 +78,9 @@ void Level::update()
 
     paddle->update();
     ball->update();
-    ball->checkCollisionWithBrick(*brick);
+    for (auto brick = bricks.begin(); brick != bricks.end(); brick++) {
+        ball->checkCollisionWithBrick(*brick);
+    }
     ball->checkCollisionWithPaddle(paddle);
 }
 
@@ -68,7 +89,9 @@ void Level::update()
 void Level::draw()
 {
     // Draw the brick(s)
-    brick->draw();
+    for (auto brick = bricks.begin(); brick != bricks.end(); brick++) {
+        brick->draw();
+    }
 
     // Draw the ball
     ball->draw();

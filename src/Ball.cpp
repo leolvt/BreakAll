@@ -8,8 +8,8 @@ namespace BreakAll {
 Ball::Ball(float x, float y, float radius, Area levelArea)
     : X(x), Y(y), radius(radius), levelArea(levelArea)
 {
-    velX = 0.02;
-    velY = 0.04;
+    velX = 0.01;
+    velY = 0.02;
 }
 
 // ========================== //
@@ -32,7 +32,7 @@ void Ball::update()
     if (Y >= levelArea.top || Y <= levelArea.bottom )
     {
         if (Y > levelArea.top) Y = levelArea.top;
-        else if (Y < levelArea.bottom) velY = 0, velX = 0;;
+        else if (Y < levelArea.bottom) Y = levelArea.bottom; //velY = 0, velX = 0;;
         velY *= -1;
     }
 }
@@ -78,11 +78,60 @@ void Ball::checkCollisionWithBrick(Brick& brick)
     // Get brick area
     Area brickArea = brick.getDelimitedArea();
 
-    // Check for collision
-    if (X <= brickArea.right && X >= brickArea.left &&
-        Y <= brickArea.top && Y >= brickArea.bottom)
+    // Retrieve old position
+    Position old = {X-velX, Y-velY};
+
+    // Check for collision on top or bottom
+    if (brickArea.left <= X && X <= brickArea.right)
     {
-        velX = 0, velY = 0;
+        // Bottom collision
+        if (Y+radius >= brickArea.bottom && 
+            old.y + radius < brickArea.bottom)
+        {
+            velY *= -1;
+            Y = brickArea.bottom;
+        }
+        
+        // Top collision
+        else if (Y-radius <= brickArea.top && 
+            old.y-radius > brickArea.top)
+        {
+            velY *= -1;
+            Y = brickArea.top;
+        }
+    }
+    
+    // Check for collision on left or right
+    else if (brickArea.top >= Y && Y >= brickArea.bottom)
+    {
+        // Left collision
+        if (X+radius >= brickArea.left && 
+            old.x + radius < brickArea.left)
+        {
+            velX *= -1;
+            X = brickArea.left;
+        }
+        
+        // Right collision
+        else if (X-radius <= brickArea.right && 
+            old.x-radius > brickArea.right)
+        {
+            velX *= -1;
+            X = brickArea.right;
+        }
+    }
+
+    // TODO: Check Collision with Corners
+    // Tip: Use distance from center dist(corner, center) <= R
+    else 
+    {
+        // Check Bottom Left
+        float diffX = (brickArea.left - X)*(brickArea.left - X);
+        float diffY = (brickArea.bottom - Y)*(brickArea.bottom - Y);
+        if (diffX + diffY <= radius*radius) 
+        {
+
+        }
     }
 }
 
