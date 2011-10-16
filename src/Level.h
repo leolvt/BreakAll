@@ -2,6 +2,7 @@
 #define LEVEL_H_INCLUDED
 
 #include "Ball.h"
+#include "Brick.h"
 #include "Drawable.h"
 #include "paddle.h"
 
@@ -25,6 +26,7 @@ class Level: public Drawable
 		bool paused;
         Paddle * paddle;
         Ball* ball;
+        Brick* brick;
 };
 
 // ========================== //

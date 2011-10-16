@@ -1,5 +1,4 @@
 #include "Level.h"
-#include "Ball.h"
 
 namespace BreakAll {
 
@@ -33,6 +32,10 @@ Level::Level(Area totalArea)
     // Create the ball
     this->ball = new Ball(0,0, 0.05, this->levelArea);
 
+    // Create a new TEST brick
+    Position brickPos = {0,0}; 
+    this->brick = new Brick(brickPos, 0.2, 0.1);
+
     // Start the game paused
     paused = true;
 }
@@ -63,6 +66,9 @@ void Level::update()
 
 void Level::draw()
 {
+    // Draw the brick(s)
+    brick->draw();
+
     // Draw the ball
     ball->draw();
 
