@@ -1,5 +1,4 @@
 #include "paddle.h"
-#include <GL/glut.h>
 
 namespace BreakAll{
 
