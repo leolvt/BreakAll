@@ -11,6 +11,7 @@ Ball::Ball(float x, float y, float radius, Area levelArea)
 {
     velX = 0.01;
     velY = 0.02;
+    valid = true;
 }
 
 // ========================== //
@@ -33,7 +34,11 @@ void Ball::update()
     if (Y >= levelArea.top || Y <= levelArea.bottom )
     {
         if (Y > levelArea.top) Y = levelArea.top;
-        else if (Y < levelArea.bottom) Y = levelArea.bottom; //velY = 0, velX = 0;;
+        else if (Y <= levelArea.bottom) 
+        {
+            velX = 0; velY = 0;
+            valid = false;
+        }
         velY *= -1;
     }
 }
@@ -42,6 +47,8 @@ void Ball::update()
 
 void Ball::draw()
 {
+    if (!valid) return;
+
     // Draw Circle using GL_TRIANGLE_FAN
     const float PI = 3.1415926f;
     const int nVertices = 36;
@@ -174,6 +181,13 @@ bool Ball::collidesWithArea(Area area)
     }
 
     return collided;
+}
+
+// ========================== //
+
+bool Ball::isValid()
+{
+    return valid;
 }
 
 // ========================== //

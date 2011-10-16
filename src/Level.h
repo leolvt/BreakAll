@@ -22,10 +22,14 @@ class Level: public Drawable
         void onKeyPressed(int key);
         void onMouseMove(float x, float y);
         Area getLevelArea();
+        void resetBalls();
+        bool isAlive();
+        void live();
     private:
         Area levelArea;
         Area levelInfoArea;
 		bool paused;
+		bool alive;
         Paddle * paddle;
         Ball* ball;
         std::list<Brick> bricks;

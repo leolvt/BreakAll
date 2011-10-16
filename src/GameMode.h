@@ -1,7 +1,7 @@
 #ifndef GAME_MODE_H_INCLUDED
 #define GAME_MODE_H_INCLUDED
 
-#include "Drawable.h"
+#include "Level.h"
 
 namespace BreakAll {
 
@@ -21,9 +21,10 @@ class GameMode: public Drawable
         Area gameArea;
         Area levelArea;
         Area infoArea;
-        Drawable* level;
+        Level* level;
         OGLFT::Monochrome* mono13;
         OGLFT::Monochrome* mono26;
+        bool gameOver;
         int numLives;
         int numPoints;
         int currLevel;

@@ -56,6 +56,7 @@ Level::Level(Area totalArea)
     }
 
     // Start the game paused
+    alive = true;
     paused = true;
 }
 
@@ -74,8 +75,10 @@ Level::~Level()
 
 void Level::update()
 {
+    // Don't update when paused
     if (paused) return;
 
+    // Update paddle, ball and bricks
     paddle->update();
     ball->update();
     bool noMoreBricks = true;
@@ -89,7 +92,14 @@ void Level::update()
     }
     ball->collidesWithArea(paddle->getPaddleArea());
 
+    // Check if we destroyed all bricks
     if (noMoreBricks) paused = true;
+
+    // Check if the ball has fallen
+    if (!ball->isValid()) 
+    {
+        this->alive = false;
+    }
 }
 
 // ========================== //
@@ -165,6 +175,28 @@ void Level::onMouseMove(float x, float y)
 Area Level::getLevelArea()
 {
     return this->levelArea;
+}
+
+// ========================== //
+
+void Level::resetBalls()
+{
+    delete this->ball;
+    this->ball = new Ball(0,-0.1, 0.05, this->levelArea);
+}
+
+// ========================== //
+
+bool Level::isAlive()
+{
+    return this->alive;
+}
+
+// ========================== //
+
+void Level::live()
+{
+    this->alive = true;
 }
 
 // ========================== //

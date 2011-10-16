@@ -52,6 +52,7 @@ GameMode::GameMode(Area gameArea)
     this->numPoints = 0;
 
     // Start at level 1
+    this->gameOver = false;
     this->currLevel = 1;
     this->level = new Level(levelArea);
 }
@@ -69,7 +70,24 @@ GameMode::~GameMode()
 
 void GameMode::update()
 {
+    // Update level
     level->update();
+
+    // If we have failed, check if we have another life
+    if (!level->isAlive())
+    {
+        // We have more lives
+        if (numLives > 0) 
+        {
+            this->numLives--;
+            level->resetBalls();
+            level->live();
+        }
+        else
+        {
+            this->gameOver = true;
+        }
+    }
 }
 
 // ========================== //
@@ -112,6 +130,23 @@ void GameMode::draw()
     fontPos.y = (infoArea.top + infoArea.bottom)/2;   
     mono26->setVerticalJustification(OGLFT::Face::MIDDLE);
     mono26->draw(fontPos.x, fontPos.y, levelStr.c_str());
+
+    if (gameOver)
+    {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBegin(GL_QUADS);
+           glColor4f(0.5, 0.5, 0.5, 0.5); 
+           glVertex2f(levelArea.left, levelArea.top);
+           glVertex2f(levelArea.right, levelArea.top);
+           glVertex2f(levelArea.right, levelArea.bottom);
+           glVertex2f(levelArea.left, levelArea.bottom);
+        glEnd();
+        glDisable(GL_BLEND);
+
+        mono26->setHorizontalJustification(OGLFT::Face::CENTER);
+        mono26->draw(0,0, "GAME OVER!!! :(");
+    }
 }
 
 // ========================== //
@@ -119,6 +154,7 @@ void GameMode::draw()
 void GameMode::onKeyPressed(int key)
 {
     if (key == 'Q' || key == GLFW_KEY_ESC) BreakAll::stop();
+    if (key == 'R') level->resetBalls();
     level->onKeyPressed(key);
 }
 

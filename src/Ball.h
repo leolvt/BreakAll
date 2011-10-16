@@ -20,8 +20,10 @@ class Ball: public Drawable
         void onKeyPressed(int key) {};
         void onMouseMove(float x, float y) {};
         bool collidesWithArea(Area area);
+        bool isValid();
 
     private:
+        bool valid;
         Area levelArea;
         float X, Y;
         float radius;
