@@ -32,7 +32,7 @@ void Ball::update()
     if (Y >= levelArea.top || Y <= levelArea.bottom )
     {
         if (Y > levelArea.top) Y = levelArea.top;
-        else if (Y < levelArea.bottom) Y = levelArea.bottom;
+        else if (Y < levelArea.bottom) velY = 0, velX = 0;;
         velY *= -1;
     }
 }
@@ -68,6 +68,21 @@ void Ball::checkCollisionWithPaddle(Paddle * paddle)
     {
         //Inverts the ball's speed on Y if it touches the paddle
         velY *= -1;
+    }
+}
+
+// ========================== //
+
+void Ball::checkCollisionWithBrick(Brick& brick)
+{
+    // Get brick area
+    Area brickArea = brick.getDelimitedArea();
+
+    // Check for collision
+    if (X <= brickArea.right && X >= brickArea.left &&
+        Y <= brickArea.top && Y >= brickArea.bottom)
+    {
+        velX = 0, velY = 0;
     }
 }
 

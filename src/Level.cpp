@@ -58,8 +58,9 @@ void Level::update()
     if (paused) return;
 
     paddle->update();
-    ball->checkCollisionWithPaddle(paddle);
     ball->update();
+    ball->checkCollisionWithBrick(*brick);
+    ball->checkCollisionWithPaddle(paddle);
 }
 
 // ========================== //

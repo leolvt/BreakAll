@@ -16,9 +16,10 @@ class Brick: public Drawable
         void draw();
         void onKeyPressed(int key) {};
         void onMouseMove(float x, float y) {};
-
+        Area getDelimitedArea();
     private:
         Position pos;
+        Area brickArea;
         float width;
         float height;
 };

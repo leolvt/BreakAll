@@ -7,7 +7,10 @@ namespace BreakAll {
 Brick::Brick(Position p, float width, float height)
     : pos(p), width(width), height(height)
 {
-    
+    this->brickArea.top = p.y + height/2;
+    this->brickArea.right = p.x + width/2;
+    this->brickArea.bottom = p.y - height/2;
+    this->brickArea.left = p.x - width/2;
 }
 
 // ========================== //
@@ -40,7 +43,10 @@ void Brick::draw()
 
 // ========================== //
 
-// ========================== //
+Area Brick::getDelimitedArea()
+{
+    return brickArea;
+}
 
 // ========================== //
 
