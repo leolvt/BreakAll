@@ -45,3 +45,6 @@ link_directories(${PROJECT_SOURCE_DIR}/lib)
 
 # Add our source dir to cmake
 add_subdirectory(src)
+
+# Copy Needed font to build output dir
+file(COPY "content/DejaVuSansMono.ttf" DESTINATION ${CMAKE_BINARY_DIR})

@@ -14,5 +14,3 @@ set(CMAKE_CXX_FLAGS "-std=c++0x")
 
 add_executable(BreakAll ${BREAKALL_SRC})
 target_link_libraries(BreakAll ${BREAKALL_LIBS})
-
-install(TARGETS BreakAll DESTINATION bin)
