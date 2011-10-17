@@ -26,6 +26,7 @@ class Level: public Drawable
         bool isCleared();
         void live();
         void print();
+        int getPoints();
         void onKeyPressed(int key);
         void onMouseMove(float x, float y);
     private:
@@ -34,6 +35,7 @@ class Level: public Drawable
 		bool alive;
 		bool cleared;
         int numBalls;
+        int points;
         float paddleSizeFactor;
         Paddle * paddle;
         Ball* ball;

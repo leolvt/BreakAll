@@ -1,9 +1,12 @@
 #include "Level.h"
+#include "Util.h"
 
 #include <iostream>
 
-namespace BreakAll {
+#define POINTS_PER_BRICK 50
+#define POINTS_PER_DEATH 150
 
+namespace BreakAll {
 
 // ========================== //
 
@@ -50,6 +53,7 @@ Level::Level(Area totalArea, int numRows, int numCols, int numBalls, float paddl
     // Start the game 
     alive = true;
     cleared = false;
+    points = 0;
 }
 
 // ========================== //
@@ -58,6 +62,13 @@ Level::~Level()
 {
     bricks.clear();
     balls.clear();
+}
+
+// ========================== //
+
+int Level::getPoints()
+{
+    return points;
 }
 
 // ========================== //
@@ -76,6 +87,7 @@ void Level::step()
             if ( b->collidesWithArea(brick->getDelimitedArea()) )
             {
                 brick->die();
+                points += POINTS_PER_BRICK;
             }
             noMoreBricks = false;
             bool hitPaddle = b->collidesWithArea(paddle->getPaddleArea());
@@ -98,6 +110,7 @@ void Level::step()
         if (!b->isValid()) 
         {
             this->alive = false;
+            points -= POINTS_PER_DEATH;
             break;
         }
     }
@@ -126,6 +139,21 @@ void Level::draw()
         glVertex2f(levelInfoArea.right, levelInfoArea.bottom);
         glVertex2f(levelInfoArea.left, levelInfoArea.bottom);
     glEnd();
+
+    // Draw Points
+    OGLFT::Monochrome mono13 = OGLFT::Monochrome("DejaVuSansMono.ttf", 13);
+    if ( !mono13.isValid() ) 
+    {
+        std::cerr << "Could not construct face."  << std::endl;
+        return;
+    }
+    mono13.setForegroundColor(0,0,0);
+    glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+    std::string ptsStr = "Level Score: " + intToStr(points);
+    Position fontPos;
+    fontPos.x = levelInfoArea.right-measureTextWidth(&mono13, ptsStr)-0.05;
+    fontPos.y = levelInfoArea.bottom+measureTextHeight(&mono13, ptsStr)+0.05;
+    mono13.draw(fontPos.x, fontPos.y, ptsStr.c_str());
 
     // Draw the paddle
     paddle->draw();

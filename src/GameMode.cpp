@@ -121,10 +121,14 @@ void GameMode::step()
         {
             numLives = 0;
             this->gameOver = true;
+            this->numPoints += level->getPoints();
+            if (numPoints < 0) numPoints = 0;
         }
     }
     else if (level->isCleared())
     {
+        this->numPoints += level->getPoints();
+        if (numPoints < 0) numPoints = 0;
         nextLevel();
     }
 }
