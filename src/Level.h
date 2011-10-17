@@ -15,7 +15,7 @@ namespace BreakAll {
 class Level: public Drawable
 {
     public:
-        Level(Area totalArea);
+        Level(Area totalArea, int numRows, int numCols, int numBalls, float paddleSizeFactor);
         ~Level();
         void draw();
         void step();
@@ -33,9 +33,12 @@ class Level: public Drawable
         Area levelInfoArea;
 		bool alive;
 		bool cleared;
+        int numBalls;
+        float paddleSizeFactor;
         Paddle * paddle;
         Ball* ball;
         std::list<Brick> bricks;
+        std::list<Ball> balls;
 };
 
 // ========================== //

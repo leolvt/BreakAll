@@ -10,14 +10,13 @@ namespace BreakAll {
 class Paddle: public Drawable
 {
     public:
-        Paddle(Area levelArea, Area levelInfoArea);
+        Paddle(Area levelArea, Area levelInfoArea, float sizeFactor);
         ~Paddle();
         void step();
         void draw();
         Area getPaddleArea();
         float getPaddleSpeed();
         void print();
-        void reset();
         virtual void onKeyPressed(int key);
         virtual void onMouseMove(float x, float y);
     private:

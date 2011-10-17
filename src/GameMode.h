@@ -19,6 +19,8 @@ class GameMode: public Mode
         void draw();
         void drawTopBar();
         void print();
+        void nextLevel();
+        void prevLevel();
         void onKeyPressed(int key);
         void onMouseMove(float x, float y);
         void onMouseButton(int button);
@@ -35,6 +37,8 @@ class GameMode: public Mode
         int numLives;
         int numPoints;
         int currLevel;
+        int currNumRows;
+        int currNumCols;
 };
 
 // ========================== //

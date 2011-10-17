@@ -6,6 +6,12 @@
 #include "Level.h"
 #include "Util.h"
 
+#define MIN_ROWS 2
+#define MAX_ROWS 1000 // 10
+
+#define MIN_COLS 4
+#define MAX_COLS 1000 // 20
+
 namespace BreakAll {
 
 // ========================== //
@@ -52,10 +58,13 @@ GameMode::GameMode(Area gameArea)
     this->numPoints = 0;
 
     // Start at level 1
+    this->currNumRows = MIN_ROWS-1;
+    this->currNumCols = MIN_COLS-1;
     this->gameOver = false;
     this->paused = true;
-    this->currLevel = 1;
-    this->level = new Level(levelArea);
+    this->currLevel = 0;
+    this->level = 0;
+    nextLevel();
 }
 
 // ========================== //
@@ -78,9 +87,8 @@ void GameMode::reset()
     // Start at level 1
     this->gameOver = false;
     this->paused = true;
-    this->currLevel = 1;
-    if (level != 0) delete level;
-    this->level = new Level(levelArea);
+    this->currLevel = 0;
+    prevLevel();
 }
 
 // ========================== //
@@ -117,11 +125,53 @@ void GameMode::step()
     }
     else if (level->isCleared())
     {
-        this->currLevel++;
-        delete level;
-        level = new Level(levelArea);
-        this->paused = true;
+        nextLevel();
     }
+}
+
+// ========================== //
+
+void GameMode::nextLevel()
+{
+    // Clear current level
+    if (level != 0) delete level;
+
+    // Build new level
+    if (currNumRows < MAX_ROWS) currNumRows++;
+    if (currNumCols < MAX_COLS) currNumCols++;
+    currLevel++;
+    float currPaddleFactor = 0.1;
+    if (currLevel < 20) currPaddleFactor = 1.0 - (currLevel-1)*0.0474;
+    level = new Level(levelArea, currNumRows, currNumCols, 1+(currLevel/8), currPaddleFactor);
+    paused = true;
+}
+
+// ========================== //
+
+void GameMode::prevLevel()
+{
+    // Clear current level
+    if (level != 0) delete level;
+
+    // Sanity Check
+    if (currLevel <= 1) 
+    {
+        currLevel = 1;
+        currNumRows = MIN_ROWS;
+        currNumCols = MIN_COLS;
+    }
+    else
+    {
+    // Build new level
+        currLevel--;
+        if (currNumRows > MIN_ROWS) currNumRows--;
+        if (currNumCols > MIN_COLS) currNumCols--;
+    }
+
+    float currPaddleFactor = 0.1;
+    if (currLevel < 20) currPaddleFactor = 1.0 - (currLevel-1)*0.0474;
+    level = new Level(levelArea, currNumRows, currNumCols, 1+(currLevel/5), currPaddleFactor);
+    paused = true;
 }
 
 // ========================== //
@@ -243,9 +293,14 @@ void GameMode::onKeyPressed(int key)
     // 'R' for reset
     if (key == 'R') reset();
 
-    // 'P' for pause
-    if (key == 'P') paused = !paused;
+    // Next e Previous Levels
+    if (key == 'N') nextLevel();
+    if (key == 'P') prevLevel();
 
+    // Give and Take Lives
+    if (key == GLFW_KEY_KP_ADD) numLives++;
+    if (key == GLFW_KEY_KP_SUBTRACT && numLives > 1) numLives--;
+    
     // If not paused nor gameover, propagate.
     if (!paused && !gameOver) level->onKeyPressed(key);
 }

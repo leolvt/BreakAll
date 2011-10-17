@@ -1,6 +1,8 @@
 #ifndef BALL_H_INCLUDED
 #define BALL_H_INCLUDED
 
+#include <glm/glm.hpp>
+
 #include "Brick.h"
 #include "Drawable.h"
 #include "paddle.h"
@@ -14,7 +16,7 @@ namespace BreakAll {
 class Ball: public Drawable
 {
     public:
-        Ball(float x, float y, float radius, Area levelArea);
+        Ball(Position p, float radius, glm::vec2 vel, Area levelArea);
         void step();
         void draw();
         void print();
@@ -27,9 +29,9 @@ class Ball: public Drawable
     private:
         bool valid;
         Area levelArea;
-        float X, Y;
+        Position pos;
         float radius;
-        float velX, velY;
+        glm::vec2 vel;
 };
 
 // ========================== //

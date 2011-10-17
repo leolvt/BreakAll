@@ -6,13 +6,14 @@ namespace BreakAll{
 
 // ========================== //
 
-Paddle::Paddle(Area levelArea, Area levelInfoArea)
+Paddle::Paddle(Area levelArea, Area levelInfoArea, float sizeFactor)
     : levelArea(levelArea)
 {
-    paddleSize.top = 0.04;
-    paddleSize.bottom = -0.04;
-    paddleSize.left = -0.5;
-    paddleSize.right = 0.5;
+    float paddleWidth = 1.0 * sizeFactor;
+    paddleSize.top = 0.05;
+    paddleSize.bottom = -0.05;
+    paddleSize.left = -paddleWidth/2.0;
+    paddleSize.right = paddleWidth/2.0;
     
     position.x = (levelArea.left + levelArea.right)/2;
     position.y = levelArea.bottom + 0.06;
@@ -152,16 +153,6 @@ Area Paddle::getPaddleArea()
 float Paddle::getPaddleSpeed()
 {
     return paddleSpeed;
-}
-
-// ========================== //
-
-void Paddle::reset()
-{
-    position.x = (levelArea.left + levelArea.right)/2;
-    position.y = levelArea.bottom + 0.06;
-    paddleSpeed = 0;
-    paddleMovementMeter.left = paddleMovementMeter.right = paddleMovementBarPos.x;
 }
 
 // ========================== //
