@@ -23,6 +23,7 @@ class Level: public Drawable
         void resetBalls();
         void resetPaddle();
         bool isAlive();
+        bool isCleared();
         void live();
         void print();
         void onKeyPressed(int key);
@@ -31,6 +32,7 @@ class Level: public Drawable
         Area levelArea;
         Area levelInfoArea;
 		bool alive;
+		bool cleared;
         Paddle * paddle;
         Ball* ball;
         std::list<Brick> bricks;

@@ -57,6 +57,7 @@ Level::Level(Area totalArea)
 
     // Start the game 
     alive = true;
+    cleared = false;
 }
 
 // ========================== //
@@ -95,7 +96,10 @@ void Level::step()
 
     // Check if we destroyed all bricks
     // HANDLE levelCleared
-//    if (noMoreBricks) paused = true;
+    if (noMoreBricks) 
+    {
+        this->cleared = true;
+    }
 
     // Check if the ball has fallen
     if (!ball->isValid()) 
@@ -128,6 +132,13 @@ void Level::draw()
 
     // Draw the paddle
     paddle->draw();
+}
+
+// ========================== //
+
+bool Level::isCleared()
+{
+    return this->cleared;
 }
 
 // ========================== //

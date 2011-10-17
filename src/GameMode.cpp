@@ -115,6 +115,13 @@ void GameMode::step()
             this->gameOver = true;
         }
     }
+    else if (level->isCleared())
+    {
+        this->currLevel++;
+        delete level;
+        level = new Level(levelArea);
+        this->paused = true;
+    }
 }
 
 // ========================== //
