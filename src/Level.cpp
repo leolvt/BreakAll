@@ -93,7 +93,7 @@ void Level::step()
             bool hitPaddle = b->collidesWithArea(paddle->getPaddleArea());
             if (hitPaddle)
             {
-                b->updateSpeedFromPaddle(paddle->getPaddleSpeed());
+                b->updateSpeedFromPaddle(paddle->getPaddleSpeed(), paddle->getPaddleArea());
             }
         }
         if (noMoreBricks) break;

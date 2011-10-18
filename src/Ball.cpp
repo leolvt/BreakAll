@@ -183,9 +183,35 @@ bool Ball::collidesWithArea(Area area)
 
 // ========================== //
 
-bool Ball::updateSpeedFromPaddle(float paddleSpeed)
+void Ball::updateSpeedFromPaddle(float paddleSpeed, Area paddleArea)
 {
-    vel.x += paddleSpeed*0.2;
+	//The call to this function is made with the assumption of a collision
+	float r = (paddleArea.right - paddleArea.left)*2;
+	float middlePaddle = (paddleArea.left + paddleArea.right) / 2;
+	float halfPaddle = middlePaddle - paddleArea.left;	
+	float angle = 0;
+	if (pos.x > middlePaddle)
+	{
+		angle = 90 - (pos.x - middlePaddle) / halfPaddle * 90;
+	}
+	else
+	{
+		angle = (middlePaddle - pos.x) / halfPaddle * 90 + 90;
+	}
+	if (angle < 0 || angle > 180)
+	{
+		return;
+	}
+	const float PI = 3.1415926f;
+	float cos = glm::cos(angle / 180 * PI);
+	float sin = glm::sin(angle / 180 * PI);
+	
+	float oldVelMagnitude = glm::sqrt(vel.x*vel.x + vel.y*vel.y);
+	vel.x = vel.x*sin + vel.y*cos;
+	vel.y = vel.x*cos + vel.y*sin;
+	float newVelMagnitude = glm::sqrt(vel.x*vel.x + vel.y*vel.y);
+	vel.x *= oldVelMagnitude / newVelMagnitude;
+	vel.y *= oldVelMagnitude / newVelMagnitude;
 }
 
 // ========================== //

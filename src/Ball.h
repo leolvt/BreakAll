@@ -21,7 +21,7 @@ class Ball: public Drawable
         void draw();
         void print();
         bool collidesWithArea(Area area);
-        bool updateSpeedFromPaddle(float paddleSpeed);
+        void updateSpeedFromPaddle(float paddleSpeed, Area paddleArea);
         bool isValid();
         void onKeyPressed(int key) {};
         void onMouseMove(float x, float y) {};
