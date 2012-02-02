@@ -8,8 +8,8 @@
 		<Build>
 			<Target title="Windows">
 				<Option platforms="Windows;" />
-				<Option output="bin\Boids-Windows" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="bin" />
+				<Option output="build\Boids-Windows" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="build" />
 				<Option object_output="build\obj\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -32,8 +32,8 @@
 			</Target>
 			<Target title="Unix">
 				<Option platforms="Unix;Mac;" />
-				<Option output="bin\Boids" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="bin" />
+				<Option output="build\Boids" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="build" />
 				<Option object_output=".\build\obj" />
 				<Option type="1" />
 				<Option compiler="gcc" />
