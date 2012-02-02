@@ -8,8 +8,8 @@
 # 
 
 FIND_PATH(FREETYPE_INCLUDE_DIR freetype/freetype.h
-    ${PROJECT_SOURCE_DIR}/include
-    ${PROJECT_SOURCE_DIR}/include/freetype2
+    ${PROJECT_SOURCE_DIR}/../include
+    ${PROJECT_SOURCE_DIR}/../include/freetype2
     $ENV{FREETYPEDIR}/include 
     /usr/include/freetype2
     /usr/local/include
@@ -26,7 +26,7 @@ FIND_PATH(FREETYPE_INCLUDE_DIR freetype/freetype.h
     )
 
 FIND_LIBRARY(FREETYPE_LIBRARIES NAMES freetype PATHS 
-    ${PROJECT_SOURCE_DIR}/lib
+    ${PROJECT_SOURCE_DIR}/../lib
     $ENV{FREETYPEDIR}/lib 
     /usr/local/lib
     /usr/local/X11R6/lib

@@ -8,7 +8,7 @@
 # 
 
 FIND_PATH(GLM_INCLUDE_DIR glm/glm.hpp
-    ${PROJECT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/../include
     $ENV{GLM_PACKAGE_DIR}/include 
     /usr/local/include
     /usr/local/X11R6/include 

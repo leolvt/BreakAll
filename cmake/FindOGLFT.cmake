@@ -8,7 +8,7 @@
 # 
 
 FIND_PATH(OGLFT_INCLUDE_DIR oglft/OGLFT.h
-    ${PROJECT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/../include
     $ENV{OGLFTDIR}/include 
     /usr/local/include
     /usr/local/X11R6/include 
@@ -22,7 +22,7 @@ FIND_PATH(OGLFT_INCLUDE_DIR oglft/OGLFT.h
     )
 
 FIND_LIBRARY(OGLFT_LIBRARIES NAMES OGLFT PATHS 
-    ${PROJECT_SOURCE_DIR}/lib
+    ${PROJECT_SOURCE_DIR}/../lib
     $ENV{OGLFTDIR}/lib 
     /usr/local/lib
     /usr/local/X11R6/lib
