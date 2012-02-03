@@ -57,6 +57,12 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="src\BreakAll.cpp" />
+		<Unit filename="src\BreakAll.h" />
+		<Unit filename="src\Drawable.h" />
+		<Unit filename="src\Engine.h" />
+		<Unit filename="src\OpenGLEngine.cpp" />
+		<Unit filename="src\OpenGLEngine.h" />
 		<Unit filename="src\main.cpp" />
 		<Extensions>
 			<code_completion />
