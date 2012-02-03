@@ -53,8 +53,9 @@ set(BREAKALL_SRC
 	#Ball.cpp
     #Level.cpp
     #GameMode.cpp
-    #BreakAll.cpp
     #Util.cpp
+    OpenGLEngine.cpp
+    BreakAll.cpp
     main.cpp
 )
 
