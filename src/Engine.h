@@ -13,6 +13,8 @@ class Engine {
         virtual double GetTime() = 0;
         virtual void SetTime(double time) = 0;
 
+        virtual void PollEvents() = 0;
+        virtual bool IsWindowOpen() = 0;
         virtual void ClearScreen() = 0;
 };
 

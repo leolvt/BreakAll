@@ -9,6 +9,7 @@ OpenGLEngine::OpenGLEngine()
 {
     // Initialize OpenGL Framework
     glfwInit();
+    glfwDisable( GLFW_AUTO_POLL_EVENTS );
 }
 
 // ============================================== //
@@ -81,6 +82,20 @@ double OpenGLEngine::GetTime()
 void OpenGLEngine::SetTime(double time)
 {
     glfwSetTime(time);
+}
+
+// ============================================== //
+
+void OpenGLEngine::PollEvents()
+{
+    glfwPollEvents();
+}
+
+// ============================================== //
+
+bool OpenGLEngine::IsWindowOpen()
+{
+    return glfwGetWindowParam( GLFW_OPENED ) == GL_TRUE;
 }
 
 // ============================================== //

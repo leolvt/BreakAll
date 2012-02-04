@@ -1,14 +1,14 @@
 #include <string>
 
-#include <GL/glew.h>
-#include <GL/glfw.h>
-
 #include "BreakAll.h"
 #include "Engine.h"
 #include "OpenGLEngine.h"
+#include "Menu.h"
 
 namespace BreakAll {
  
+// ============================================== //
+
 /* Annonymous namespace to hold data */   
 namespace {
 
@@ -22,76 +22,54 @@ namespace {
     int ResHeight = 600;
     std::string WindowTitle = "BreakAll 0.1";
 
-    // Current Engine
+    // Current Game State
     Engine* CurrentEngine = 0;
+    Drawable* CurrentScreen = 0;
+    bool isRunning = false;
 };
 
 // ============================================== //
 
-void draw()
+/**
+ * Handle Key Events.
+ */
+void OnKeyPressed( Key k, KeyAction a)
 {
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(5, 5, 5,   0, 0, 0,   0, 1, 0);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(60.0, 800.0/600.0, 1, 100);
-    glMatrixMode(GL_MODELVIEW);
+    if (k == KEY_ESC && a == KEY_PRESSED) 
+    {
+        isRunning = false;
+    }
+}
 
-    glBegin(GL_TRIANGLES);
-        glColor3f(1, 0.1, 0.1);
-        glVertex3d( 0,  1,  0);
-        glVertex3d(-1,  0,  1);
-        glVertex3d( 1,  0,  1);
+// ============================================== //
 
-        glColor3f(0.1, 1, 0.1);
-        glVertex3d( 0,  1,  0);
-        glVertex3d( 1,  0,  1);
-        glVertex3d( 1,  0, -1);
+/**
+ * Poll Events and Handle those not bound to a callback
+ */
+void HandleEvents()
+{
+    CurrentEngine->PollEvents();
+    if (! CurrentEngine->IsWindowOpen() ) isRunning = false;
+}
 
-        glColor3f(0.1, 0.1, 1);
-        glVertex3d( 0,  1,  0);
-        glVertex3d(-1,  0,  1);
-        glVertex3d(-1,  0, -1);
+// ============================================== //
 
-        glColor3f(0.1, 1, 1);
-        glVertex3d( 0,  1,  0);
-        glVertex3d(-1,  0, -1);
-        glVertex3d( 1,  0, -1);
+/**
+ * Perform a game step
+ */
+void Step()
+{
+    CurrentScreen->Step();
+}
 
-        glColor3f(1, 1, 0.1);
-        glVertex3d(-1,  0,  1);
-        glVertex3d(-1,  0, -1);
-        glVertex3d( 1,  0, -1);
-        glVertex3d( 1,  0, -1);
-        glVertex3d( 1,  0,  1);
-        glVertex3d(-1,  0,  1);
-    glEnd();
+// ============================================== //
 
-
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    // left, right, top, bottom
-    gluOrtho2D(-1, 1, -1, 1);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    //gluLookAt(0, 0, 5,   0, 0, 0,   0, 1, 0);
-
-    //glTranslated(1, 1, 0);
-    //glScalef(2,2,2);
-
-    glBegin(GL_TRIANGLES);
-        glColor3f(1, 0.1, 1);
-        glVertex2d(-1,   -1);
-        glVertex2d(-1,   -0.8);
-        glVertex2d(-0.8, -1);
-    glEnd();
-
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-
+/**
+ * Draw the game 
+ */
+void Draw()
+{
+    CurrentScreen->Draw();
     CurrentEngine->SwapBuffers();
 }
 
@@ -112,7 +90,11 @@ void Initialize()
         CurrentEngine = new OpenGLEngine();
     }
 
-    // Set up everything
+    // Set up the menu
+    if (CurrentScreen == 0) 
+    {
+        CurrentScreen = new Menu();
+    }
 }
 
 // ============================================== //
@@ -130,20 +112,20 @@ void Run()
     double nextGameTick = CurrentEngine->GetTime();
     int loops;
 
-    bool isRunning = true;
+    isRunning = true;
     while( isRunning ) {
 
         loops = 0;
         while( CurrentEngine->GetTime() > nextGameTick && 
                 loops < MaxFrameSkip) 
         {
-            //updateGame();
+            Step();
             nextGameTick += SkipTicks;
             loops++;
         }
 
-        draw();
-        isRunning = !glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED);
+        Draw();
+        HandleEvents();
     }
 }
 

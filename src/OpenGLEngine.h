@@ -17,6 +17,8 @@ class OpenGLEngine : public Engine
         double GetTime();
         void SetTime(double time);
         
+        void PollEvents();
+        bool IsWindowOpen();
         void ClearScreen();
 };
 

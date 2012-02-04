@@ -54,6 +54,7 @@ set(BREAKALL_SRC
     #Level.cpp
     #GameMode.cpp
     #Util.cpp
+    Menu.cpp
     OpenGLEngine.cpp
     BreakAll.cpp
     main.cpp

@@ -1,12 +1,15 @@
 #ifndef DRAWABLE_H
 #define DRAWABLE_H
 
+#include "BreakAll.h"
+
 // ============================================== //
 
 class Drawable {
     public:
-        virtual void display() = 0;
-        virtual void step() = 0;
+        virtual void Draw() = 0;
+        virtual void Step() = 0;
+        virtual void KeyPressed(BreakAll::Key k) = 0;
 };
 
 // ============================================== //
