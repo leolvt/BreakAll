@@ -7,6 +7,7 @@ namespace BreakAll
 {
     void Initialize();
     void Run();
+    void Stop();
     void Terminate();
 
     typedef enum 

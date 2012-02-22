@@ -1,4 +1,5 @@
 #include "Menu.h"
+#include "BreakAll.h"
 
 #include <GL/glew.h>
 #include <GL/glfw.h>
@@ -93,9 +94,9 @@ void Menu::Step()
 
 // ============================================== //
 
-void Menu::KeyPressed(BreakAll::Key k)
+void Menu::OnKeyPressed(BreakAll::Key k)
 {
-
+    if (k == BreakAll::KEY_ESC) BreakAll::Stop();
 }
 
 // ============================================== //

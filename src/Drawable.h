@@ -9,7 +9,7 @@ class Drawable {
     public:
         virtual void Draw() = 0;
         virtual void Step() = 0;
-        virtual void KeyPressed(BreakAll::Key k) = 0;
+        virtual void OnKeyPressed(BreakAll::Key k) = 0;
 };
 
 // ============================================== //

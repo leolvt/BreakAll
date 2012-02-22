@@ -1,3 +1,4 @@
+#include <set>
 #include <string>
 
 #include "BreakAll.h"
@@ -26,6 +27,7 @@ namespace {
     Engine* CurrentEngine = 0;
     Drawable* CurrentScreen = 0;
     bool isRunning = false;
+    std::set<Key> pressedKeys;
 };
 
 // ============================================== //
@@ -33,11 +35,19 @@ namespace {
 /**
  * Handle Key Events.
  */
-void OnKeyPressed( Key k, KeyAction a)
+void OnKeyPressed( Key k, KeyAction a )
 {
-    if (k == KEY_ESC && a == KEY_PRESSED) 
+    // Mark the key down if it is pressed
+    if (a == KEY_PRESSED) 
     {
-        isRunning = false;
+        pressedKeys.insert(k);
+    }
+    // And remove it otherwise
+    else if (pressedKeys.erase(k) != 0)
+    {
+        // When a key was pressed and released, dispatch 
+        // the event to the current screen
+        CurrentScreen->OnKeyPressed(k);
     }
 }
 
@@ -143,6 +153,13 @@ void Terminate()
     // TODO
     // Save any config needed
     // Closes everything used
+}
+
+// ============================================== //
+
+void Stop()
+{
+    isRunning = false;
 }
 
 // ============================================== //
