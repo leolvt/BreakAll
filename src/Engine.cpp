@@ -1,20 +1,46 @@
 #include <GL/glew.h>
 #include <GL/glfw.h>
 
-#include "OpenGLEngine.h"
+#include "Engine.h"
 
 // ============================================== //
 
-OpenGLEngine::OpenGLEngine()
+namespace Engine
+{
+
+// ============================================== //
+
+/* 
+ * Store "private globals" 
+ */
+namespace 
+{
+    OnKeyEvent keyCallback = 0;
+};
+
+// ============================================== //
+
+void GLFWCALL handleKeys( int key, int action )
+{
+    if (keyCallback == 0) return;
+
+    keyCallback((Engine::Key) key, (Engine::KeyState)action);
+}
+
+
+// ============================================== //
+
+void Init()
 {
     // Initialize OpenGL Framework
     glfwInit();
     glfwDisable( GLFW_AUTO_POLL_EVENTS );
+    glfwSetKeyCallback( handleKeys );
 }
 
 // ============================================== //
 
-OpenGLEngine::~OpenGLEngine()
+void Terminate()
 {
     // Terminate OpenGL Framework
     glfwTerminate();
@@ -25,7 +51,7 @@ OpenGLEngine::~OpenGLEngine()
 /**
  *  Open a window with the given size and title
  */
-void OpenGLEngine::OpenWindow(int width, int height, std::string title)
+void OpenWindow(int width, int height, std::string title)
 {
     // Create a Non Resiseable Window
     glfwOpenWindowHint( GLFW_WINDOW_NO_RESIZE, true );
@@ -43,7 +69,7 @@ void OpenGLEngine::OpenWindow(int width, int height, std::string title)
 /**
  *  Open a Full Screen window with the given size and title
  */
-void OpenGLEngine::OpenFullScreenWindow(int width, int height, std::string title)
+void OpenFullScreenWindow(int width, int height, std::string title)
 {
     // Define the title of the window
     glfwSetWindowTitle( title.c_str() );
@@ -58,7 +84,7 @@ void OpenGLEngine::OpenFullScreenWindow(int width, int height, std::string title
  * Swap the Video Card Buffers, effectively showing what was drawn 
  * into the screen.
  */
-void OpenGLEngine::SwapBuffers()
+void SwapBuffers()
 {
     glfwSwapBuffers();
 }
@@ -69,7 +95,7 @@ void OpenGLEngine::SwapBuffers()
  * Get Ellapsed time in seconds since the initialization or 
  * since the timer was set
  */
-double OpenGLEngine::GetTime()
+double GetTime()
 {
     return glfwGetTime();
 }
@@ -79,21 +105,27 @@ double OpenGLEngine::GetTime()
 /**
  * Set the timer to a specific time
  */
-void OpenGLEngine::SetTime(double time)
+void SetTime(double time)
 {
     glfwSetTime(time);
 }
 
 // ============================================== //
 
-void OpenGLEngine::PollEvents()
+/**
+ * Poll for events such as key press or mouse events
+ */
+void PollEvents()
 {
     glfwPollEvents();
 }
 
 // ============================================== //
 
-bool OpenGLEngine::IsWindowOpen()
+/**
+ * Check if the Window is currently open
+ */
+bool IsWindowOpen()
 {
     return glfwGetWindowParam( GLFW_OPENED ) == GL_TRUE;
 }
@@ -103,7 +135,7 @@ bool OpenGLEngine::IsWindowOpen()
 /**
  * Clear the current buffer
  */
-void OpenGLEngine::ClearScreen()
+void ClearScreen()
 {
     //glClearColor(0.3, 0.3, 0.3, 0.3);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -111,6 +143,13 @@ void OpenGLEngine::ClearScreen()
 
 // ============================================== //
 
+void SetKeyCallback(OnKeyEvent e)
+{
+    keyCallback = e;
+}
+
 // ============================================== //
 
 // ============================================== //
+
+}; /* namespace Engine */

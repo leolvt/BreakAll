@@ -5,17 +5,34 @@
 
 // ============================================== //
 
-class Engine {
-    public:
-        virtual void OpenWindow(int width, int height, std::string title) = 0;
-        virtual void OpenFullScreenWindow(int width, int height, std::string title) = 0;
-        virtual void SwapBuffers() = 0;
-        virtual double GetTime() = 0;
-        virtual void SetTime(double time) = 0;
+namespace Engine
+{
+    typedef enum
+    {
+        KEY_ESC,
+    } Key;
+    
+    typedef enum
+    {
+        KEY_PRESSED,
+        KEY_RELEASED
+    } KeyState;
 
-        virtual void PollEvents() = 0;
-        virtual bool IsWindowOpen() = 0;
-        virtual void ClearScreen() = 0;
+    typedef void (*OnKeyEvent)(Key,KeyState);
+
+    void Init();
+    void Terminate();
+
+    void OpenWindow(int width, int height, std::string title);
+    void OpenFullScreenWindow(int width, int height, std::string title);
+    void SwapBuffers();
+    double GetTime();
+    void SetTime(double time);
+
+    void PollEvents();
+    bool IsWindowOpen();
+    void ClearScreen();
+    void SetKeyCallback(OnKeyEvent e);
 };
 
 // ============================================== //
