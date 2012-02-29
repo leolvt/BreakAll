@@ -6,14 +6,14 @@
 
 // ============================================== //
 
-Menu::Menu ()
+Menu::Menu()
 {
 
 }
 
 // ============================================== //
 
-Menu::~Menu ()
+Menu::~Menu()
 {
 
 }
@@ -94,9 +94,9 @@ void Menu::Step()
 
 // ============================================== //
 
-void Menu::OnKeyPressed(BreakAll::Key k)
+void Menu::OnKeyPressed(Engine::Key k)
 {
-    if (k == BreakAll::KEY_ESC) BreakAll::Stop();
+    if (k == Engine::KEY_ESC) BreakAll::Stop();
 }
 
 // ============================================== //

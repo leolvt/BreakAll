@@ -12,7 +12,7 @@ class Menu : public Drawable
         ~Menu ();
         void Draw();
         void Step();
-        void OnKeyPressed(BreakAll::Key k);
+        void OnKeyPressed(Engine::Key k);
     private:
         /* data */
 };

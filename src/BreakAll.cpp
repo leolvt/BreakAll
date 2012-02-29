@@ -3,7 +3,6 @@
 
 #include "BreakAll.h"
 #include "Engine.h"
-#include "OpenGLEngine.h"
 #include "Menu.h"
 
 namespace BreakAll {
@@ -24,10 +23,9 @@ namespace {
     std::string WindowTitle = "BreakAll 0.1";
 
     // Current Game State
-    Engine* CurrentEngine = 0;
     Drawable* CurrentScreen = 0;
     bool isRunning = false;
-    std::set<Key> pressedKeys;
+    std::set<Engine::Key> pressedKeys;
 };
 
 // ============================================== //
@@ -35,10 +33,10 @@ namespace {
 /**
  * Handle Key Events.
  */
-void OnKeyPressed( Key k, KeyAction a )
+void OnKeyPressed( Engine::Key k, Engine::KeyState a )
 {
     // Mark the key down if it is pressed
-    if (a == KEY_PRESSED) 
+    if (a == Engine::KEY_PRESSED) 
     {
         pressedKeys.insert(k);
     }
@@ -58,8 +56,8 @@ void OnKeyPressed( Key k, KeyAction a )
  */
 void HandleEvents()
 {
-    CurrentEngine->PollEvents();
-    if (! CurrentEngine->IsWindowOpen() ) isRunning = false;
+    Engine::PollEvents();
+    if ( !Engine::IsWindowOpen() ) isRunning = false;
 }
 
 // ============================================== //
@@ -80,7 +78,7 @@ void Step()
 void Draw()
 {
     CurrentScreen->Draw();
-    CurrentEngine->SwapBuffers();
+    Engine::SwapBuffers();
 }
 
 // ============================================== //
@@ -95,10 +93,7 @@ void Initialize()
     // Load Configs
     
     // Start the Engine
-    if (CurrentEngine == 0)
-    {
-        CurrentEngine = new OpenGLEngine();
-    }
+    Engine::Init();
 
     // Set up the menu
     if (CurrentScreen == 0) 
@@ -115,18 +110,18 @@ void Initialize()
 void Run()
 {
     // Reset Timer and Open Window
-    CurrentEngine->OpenWindow(ResWidth, ResHeight, WindowTitle);
-    CurrentEngine->SetTime(0.0);
+    Engine::OpenWindow(ResWidth, ResHeight, WindowTitle);
+    Engine::SetTime(0.0);
 
     // Starts the Game and keep the loop running
-    double nextGameTick = CurrentEngine->GetTime();
+    double nextGameTick = Engine::GetTime();
     int loops;
 
     isRunning = true;
     while( isRunning ) {
 
         loops = 0;
-        while( CurrentEngine->GetTime() > nextGameTick && 
+        while( Engine::GetTime() > nextGameTick && 
                 loops < MaxFrameSkip) 
         {
             Step();
@@ -148,7 +143,7 @@ void Run()
 void Terminate()
 {
     // Terminate the Engine
-    if (CurrentEngine != 0) delete CurrentEngine;
+    Engine::Terminate();
 
     // TODO
     // Save any config needed
