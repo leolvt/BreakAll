@@ -10,10 +10,10 @@ namespace Engine
 
 // ============================================== //
 
-/* 
- * Store "private globals" 
+/*
+ * Store "private globals"
  */
-namespace 
+namespace
 {
     OnKeyEvent keyCallback = 0;
 };
@@ -23,7 +23,16 @@ namespace
 void GLFWCALL handleKeys( int key, int action )
 {
     if (keyCallback == 0) return;
-    keyCallback((Engine::Key) key, (Engine::KeyState)action);
+    Engine::Key k;
+
+    switch (key)
+    {
+        case GLFW_KEY_ESC:
+            k = Engine::KEY_ESC;
+            break;
+    }
+
+    keyCallback(k, (Engine::KeyState)action);
 }
 
 
@@ -34,7 +43,6 @@ void Init()
     // Initialize OpenGL Framework
     glfwInit();
     glfwDisable( GLFW_AUTO_POLL_EVENTS );
-    glfwSetKeyCallback( handleKeys );
 }
 
 // ============================================== //
@@ -61,6 +69,7 @@ void OpenWindow(int width, int height, std::string title)
 
     // The other parameters define color, alpha, depth and stencil bits
     glfwOpenWindow( width, height,  8, 8, 8,  8, 8, 0, GLFW_WINDOW);
+    glfwSetKeyCallback( &handleKeys );
 }
 
 // ============================================== //
@@ -75,12 +84,13 @@ void OpenFullScreenWindow(int width, int height, std::string title)
 
     // The other parameters define color, alpha, depth and stencil bits
     glfwOpenWindow( width, height,  8, 8, 8,  8, 8, 0, GLFW_FULLSCREEN);
+    glfwSetKeyCallback( &handleKeys );
 }
 
 // ============================================== //
 
 /**
- * Swap the Video Card Buffers, effectively showing what was drawn 
+ * Swap the Video Card Buffers, effectively showing what was drawn
  * into the screen.
  */
 void SwapBuffers()
@@ -91,7 +101,7 @@ void SwapBuffers()
 // ============================================== //
 
 /**
- * Get Ellapsed time in seconds since the initialization or 
+ * Get Ellapsed time in seconds since the initialization or
  * since the timer was set
  */
 double GetTime()

@@ -3,6 +3,7 @@
 
 #include <GL/glew.h>
 #include <GL/glfw.h>
+#include <iostream>
 
 // ============================================== //
 
@@ -96,6 +97,7 @@ void Menu::Step()
 
 void Menu::OnKeyPressed(Engine::Key k)
 {
+    std::cout << "Key pressed: " << k << std::endl;
     if (k == Engine::KEY_ESC) BreakAll::Stop();
 }
 

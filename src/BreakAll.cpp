@@ -1,15 +1,16 @@
 #include <set>
 #include <string>
+#include <iostream>
 
 #include "BreakAll.h"
 #include "Engine.h"
 #include "Menu.h"
 
 namespace BreakAll {
- 
+
 // ============================================== //
 
-/* Annonymous namespace to hold data */   
+/* Annonymous namespace to hold data */
 namespace {
 
     // Things used in the game loop
@@ -36,14 +37,14 @@ namespace {
 void OnKeyPressed( Engine::Key k, Engine::KeyState s )
 {
     // Mark the key down if it is pressed
-    if (s == Engine::KEY_PRESSED) 
+    if (s == Engine::KEY_PRESSED)
     {
         pressedKeys.insert(k);
     }
     // And remove it otherwise
     else if (pressedKeys.erase(k) != 0)
     {
-        // When a key was pressed and released, dispatch 
+        // When a key was pressed and released, dispatch
         // the event to the current screen
         CurrentScreen->OnKeyPressed(k);
     }
@@ -73,7 +74,7 @@ void Step()
 // ============================================== //
 
 /**
- * Draw the game 
+ * Draw the game
  */
 void Draw()
 {
@@ -91,13 +92,13 @@ void Initialize()
 {
     // TODO
     // Load Configs
-    
+
     // Start the Engine
     Engine::Init();
     Engine::SetKeyCallback( &OnKeyPressed );
 
     // Set up the menu
-    if (CurrentScreen == 0) 
+    if (CurrentScreen == 0)
     {
         CurrentScreen = new Menu();
     }
@@ -122,8 +123,8 @@ void Run()
     while( isRunning ) {
 
         loops = 0;
-        while( Engine::GetTime() > nextGameTick && 
-                loops < MaxFrameSkip) 
+        while( Engine::GetTime() > nextGameTick &&
+                loops < MaxFrameSkip)
         {
             Step();
             nextGameTick += SkipTicks;
@@ -138,7 +139,7 @@ void Run()
 // ============================================== //
 
 /*
- * After the game has stopped, clean up what is needed and 
+ * After the game has stopped, clean up what is needed and
  * terminate the game.
  */
 void Terminate()
