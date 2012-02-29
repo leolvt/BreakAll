@@ -23,7 +23,6 @@ namespace
 void GLFWCALL handleKeys( int key, int action )
 {
     if (keyCallback == 0) return;
-
     keyCallback((Engine::Key) key, (Engine::KeyState)action);
 }
 

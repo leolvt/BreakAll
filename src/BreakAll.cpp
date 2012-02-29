@@ -33,10 +33,10 @@ namespace {
 /**
  * Handle Key Events.
  */
-void OnKeyPressed( Engine::Key k, Engine::KeyState a )
+void OnKeyPressed( Engine::Key k, Engine::KeyState s )
 {
     // Mark the key down if it is pressed
-    if (a == Engine::KEY_PRESSED) 
+    if (s == Engine::KEY_PRESSED) 
     {
         pressedKeys.insert(k);
     }
@@ -94,6 +94,7 @@ void Initialize()
     
     // Start the Engine
     Engine::Init();
+    Engine::SetKeyCallback( &OnKeyPressed );
 
     // Set up the menu
     if (CurrentScreen == 0) 
