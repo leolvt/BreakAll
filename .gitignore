@@ -4,12 +4,8 @@
 ## git ls-files -i --exclude-standard
 ## after modifying this file.
 
-# Ignore build dir and install (test) dir
+# Ignore build dir
 build/*
-install/*
-
-# Ignore old code
-old/*
 
 # Ignore Windows Libs/includes
 lib/*
@@ -18,3 +14,4 @@ include/*
 # CodeBlocks files
 BreakAll.depend
 BreakAll.layout
+
