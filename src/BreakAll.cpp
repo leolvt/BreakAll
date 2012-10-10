@@ -1,6 +1,4 @@
-#include <iostream>
 #include <string>
-#include <set>
 
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
@@ -9,6 +7,7 @@
 #include <SFML/OpenGL.hpp>
 
 #include "BreakAll.h"
+#include "GameScreen.h"
 
 namespace BreakAll {
 
@@ -18,23 +17,22 @@ namespace BreakAll {
 namespace {
 
     // Things used in the game loop
-    int TicksPerSecond = 50;
-    sf::Time TickDuration = sf::milliseconds(1.0 / TicksPerSecond);
-    int MaxFrameSkip = 10;
+    const int kTicksPerSecond = 50;
+    const sf::Time kTickDuration = sf::seconds(1.0 / kTicksPerSecond);
+    const int kMaxFrameSkip = 10;
 
     // Window and its properties
     sf::RenderWindow window;
-    int ResWidth = 800;
-    int ResHeight = 600;
-    std::string WindowTitle = "BreakAll 0.2";
+    int resWidth = 800;
+    int resHeight = 600;
+    std::string windowTitle = "BreakAll 0.2";
 
     // Game internal clock
     sf::Clock clock;
 
     // Current Game State
-    //Drawable* CurrentScreen = 0;
+    GameScreen* currentScreen = 0;
     bool isRunning = false;
-    //std::set<Engine::Key> pressedKeys;
 };
 
 // ============================================== //
@@ -43,7 +41,7 @@ namespace {
  * Perform a game step
  */
 void Step() {
-    //CurrentScreen->Step();
+    currentScreen->step();
 }
 
 // ============================================== //
@@ -52,12 +50,13 @@ void Step() {
  * Draw the game
  */
 void Draw() {
+    // TODO: Check if the code of window.clear always
+    // calls glClearColor
+    
     //window.clear(sf::Color(150,200,0));
-    glClearColor(0.6, 0.8, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //CurrentScreen->Draw();
-
+    currentScreen->draw();
     window.display();
 }
 
@@ -67,20 +66,30 @@ void Draw() {
  * Handle the events (user inputs, window events, etc)
  */
 void HandleEvents() {
+    // Poll and dispatch the events
     sf::Event event;
-    if ( window.pollEvent(event) ) {
+    while ( window.pollEvent(event) ) {
         if (event.type == sf::Event::Closed)
         {
-            // Stop the main loop
+            // Stop when the window is closed
             isRunning = false;
         }
         else if (event.type == sf::Event::Resized)
         {
             // Adjust the viewport when the window is resized
-            ResWidth = event.size.width;
-            ResHeight = event.size.height;
+            resWidth = event.size.width;
+            resHeight = event.size.height;
             glViewport(0, 0, event.size.width, event.size.height);
         }
+        // TODO: Create a Key Handler
+        else if (event.type == sf::Event::KeyPressed) {
+            if(event.key.code == sf::Keyboard::Q || 
+               event.key.code == sf::Keyboard::Escape) {
+
+                isRunning = false;
+            }
+        }
+        // TODO: Dispatch the events to the client classes
     }
 }
 
@@ -93,14 +102,22 @@ void HandleEvents() {
 void Initialize() {
     // TODO: Load Configs
     // TODO: Set up the initial game state
+    currentScreen = new GameScreen();
 
+    // Reset the clock
     clock.restart();
 
+    // Create the windows (and the underlying GL Context)
     window.create(
-        sf::VideoMode(ResWidth, ResHeight),
-        WindowTitle,
+        sf::VideoMode(resWidth, resHeight),
+        windowTitle,
         sf::Style::Close
     );
+    
+    // Set some OpenGL stuff up!
+    // TODO: is glViewport call necessary??
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glViewport(0, 0, resWidth, resHeight);
 }
 
 // ============================================== //
@@ -112,7 +129,7 @@ void Run() {
 
     // Define some important control variables
     sf::Time elapsed = sf::milliseconds(0);
-    int loops;
+    int skippedFrames = 0;
 
     // Restart the clock
     clock.restart();
@@ -121,25 +138,27 @@ void Run() {
     isRunning = true;
     while( isRunning ) {
 
-        // Reset the clock, the loop count and
+        // Reset the clock, the frame skip count and
         // sum the elapsed time
-        loops = 0;
+        skippedFrames = 0;
         elapsed += clock.restart();
 
         // If enough time has passed we should update the game state, unless
         // we have skipped more frames than the limit, in which case we skip
         // the update and draw
-        while( elapsed > TickDuration &&
-                loops < MaxFrameSkip)
+        while( elapsed > kTickDuration &&
+                skippedFrames < kMaxFrameSkip)
         {
-            // Handle events, update the game count a new possible skip and
-            // adjust the time elapsed to try to assure the game update rate
+            // Handle events, update the game, count the (possibly) skipped 
+            // frame and adjust the time elapsed to account for the current
+            // tick, trying to keep a constant game update rate
             HandleEvents();
             Step();
-            elapsed -= TickDuration;
-            loops++;
+            elapsed -= kTickDuration;
+            skippedFrames++;
         }
 
+        // Draw a new frame with the current game state
         Draw();
     }
 }

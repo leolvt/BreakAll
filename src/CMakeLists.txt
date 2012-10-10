@@ -8,7 +8,7 @@ set(CMAKE_MODULE_PATH
   "${CMAKE_SOURCE_DIR}/../cmake"
 )
 
-# Find the GL libraries we are using
+# Find the libraries we are using
 find_package(OpenGL REQUIRED)
 find_package(SFML 2 REQUIRED COMPONENTS window system graphics)
 
@@ -27,13 +27,17 @@ include_directories(
 )
 link_directories(${PROJECT_SOURCE_DIR}/../lib)
 
+# List the project source files
 set(BREAKALL_SRC
     ${BREAKALL_SRC}
+    GameScreen.cpp
     BreakAll.cpp
     main.cpp
 )
 
+# Set some Compiler Flags
 set(CMAKE_CXX_FLAGS "-std=c++0x")
 
+# Declare the executable with the  used libraries
 add_executable(BreakAll ${BREAKALL_SRC})
 target_link_libraries(BreakAll ${BREAKALL_LIBS})
