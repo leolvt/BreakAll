@@ -1,12 +1,17 @@
-#include <iostream>
+#include <stdio.h>
 
 #include "BreakAll.h"
 
-int main()
-{
-    std::cout << "Hello World!" << std::endl;
+// ============================================== //
+
+int main() {
+
     BreakAll::Initialize();
     BreakAll::Run();
     BreakAll::Terminate();
+
     return 0;
 }
+
+// ============================================== //
+

@@ -1,17 +1,16 @@
-#ifndef BREAKALL_H
-#define BREAKALL_H
+#ifndef BREAKALL_H_INCLUDED
+#define BREAKALL_H_INCLUDED
 
 // ============================================== //
 
-namespace BreakAll 
+namespace BreakAll
 {
     void Initialize();
     void Run();
-    void Stop();
     void Terminate();
 
 } /* BreakAll */
 
 // ============================================== //
 
-#endif /* BREAKALL_H */
+#endif /* BREAKALL_H_INCLUDED */

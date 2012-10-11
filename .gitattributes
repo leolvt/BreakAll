@@ -1,0 +1,10 @@
+# Files that should be normalized (crlf => lf)
+*.cpp   text
+*.h     text
+*.txt   text
+*.md    text
+*.cbp   text
+*.cmake text
+
+# Files that shouldn't be touched
+#*.ttf   binary

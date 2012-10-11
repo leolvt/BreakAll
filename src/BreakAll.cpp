@@ -1,10 +1,13 @@
-#include <set>
 #include <string>
-#include <iostream>
+
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
+
+#include <SFML/OpenGL.hpp>
 
 #include "BreakAll.h"
-#include "Engine.h"
-#include "Menu.h"
+#include "GameScreen.h"
 
 namespace BreakAll {
 
@@ -14,61 +17,31 @@ namespace BreakAll {
 namespace {
 
     // Things used in the game loop
-    int TicksPerSecond = 50;
-    double SkipTicks = 1.0 / TicksPerSecond;
-    int MaxFrameSkip = 10;
+    const int kTicksPerSecond = 50;
+    const sf::Time kTickDuration = sf::seconds(1.0 / kTicksPerSecond);
+    const int kMaxFrameSkip = 10;
 
-    // Window Properties
-    int ResWidth = 800;
-    int ResHeight = 600;
-    std::string WindowTitle = "BreakAll 0.1";
+    // Window and its properties
+    sf::RenderWindow window;
+    int resWidth = 800;
+    int resHeight = 600;
+    std::string windowTitle = "BreakAll 0.2";
+
+    // Game internal clock
+    sf::Clock clock;
 
     // Current Game State
-    Drawable* CurrentScreen = 0;
+    GameScreen* currentScreen = 0;
     bool isRunning = false;
-    std::set<Engine::Key> pressedKeys;
 };
-
-// ============================================== //
-
-/**
- * Handle Key Events.
- */
-void OnKeyPressed( Engine::Key k, Engine::KeyState s )
-{
-    // Mark the key down if it is pressed
-    if (s == Engine::KEY_PRESSED)
-    {
-        pressedKeys.insert(k);
-    }
-    // And remove it otherwise
-    else if (pressedKeys.erase(k) != 0)
-    {
-        // When a key was pressed and released, dispatch
-        // the event to the current screen
-        CurrentScreen->OnKeyPressed(k);
-    }
-}
-
-// ============================================== //
-
-/**
- * Poll Events and Handle those not bound to a callback
- */
-void HandleEvents()
-{
-    Engine::PollEvents();
-    if ( !Engine::IsWindowOpen() ) isRunning = false;
-}
 
 // ============================================== //
 
 /**
  * Perform a game step
  */
-void Step()
-{
-    CurrentScreen->Step();
+void Step() {
+    currentScreen->step();
 }
 
 // ============================================== //
@@ -76,32 +49,75 @@ void Step()
 /**
  * Draw the game
  */
-void Draw()
-{
-    CurrentScreen->Draw();
-    Engine::SwapBuffers();
+void Draw() {
+    // TODO: Check if the code of window.clear always
+    // calls glClearColor
+    
+    //window.clear(sf::Color(150,200,0));
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    currentScreen->draw();
+    window.display();
 }
 
 // ============================================== //
 
-/*
+/**
+ * Handle the events (user inputs, window events, etc)
+ */
+void HandleEvents() {
+    // Poll and dispatch the events
+    sf::Event event;
+    while ( window.pollEvent(event) ) {
+        if (event.type == sf::Event::Closed)
+        {
+            // Stop when the window is closed
+            isRunning = false;
+        }
+        else if (event.type == sf::Event::Resized)
+        {
+            // Adjust the viewport when the window is resized
+            resWidth = event.size.width;
+            resHeight = event.size.height;
+            glViewport(0, 0, event.size.width, event.size.height);
+        }
+        // TODO: Create a Key Handler
+        else if (event.type == sf::Event::KeyPressed) {
+            if(event.key.code == sf::Keyboard::Q || 
+               event.key.code == sf::Keyboard::Escape) {
+
+                isRunning = false;
+            }
+        }
+        // TODO: Dispatch the events to the client classes
+    }
+}
+
+// ============================================== //
+
+/**
  * Initialize the game, set up the context, read configs and do
  * anything needed before the game starts to run.
  */
-void Initialize()
-{
-    // TODO
-    // Load Configs
+void Initialize() {
+    // TODO: Load Configs
+    // TODO: Set up the initial game state
+    currentScreen = new GameScreen();
 
-    // Start the Engine
-    Engine::Init();
-    Engine::SetKeyCallback( &OnKeyPressed );
+    // Reset the clock
+    clock.restart();
 
-    // Set up the menu
-    if (CurrentScreen == 0)
-    {
-        CurrentScreen = new Menu();
-    }
+    // Create the windows (and the underlying GL Context)
+    window.create(
+        sf::VideoMode(resWidth, resHeight),
+        windowTitle,
+        sf::Style::Close
+    );
+    
+    // Set some OpenGL stuff up!
+    // TODO: is glViewport call necessary??
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glViewport(0, 0, resWidth, resHeight);
 }
 
 // ============================================== //
@@ -109,30 +125,41 @@ void Initialize()
 /*
  * Run the game. The game loop is inside here.
  */
-void Run()
-{
-    // Reset Timer and Open Window
-    Engine::OpenWindow(ResWidth, ResHeight, WindowTitle);
-    Engine::SetTime(0.0);
+void Run() {
 
-    // Starts the Game and keep the loop running
-    double nextGameTick = Engine::GetTime();
-    int loops;
+    // Define some important control variables
+    sf::Time elapsed = sf::milliseconds(0);
+    int skippedFrames = 0;
 
+    // Restart the clock
+    clock.restart();
+
+    // This is the main loop
     isRunning = true;
     while( isRunning ) {
 
-        loops = 0;
-        while( Engine::GetTime() > nextGameTick &&
-                loops < MaxFrameSkip)
+        // Reset the clock, the frame skip count and
+        // sum the elapsed time
+        skippedFrames = 0;
+        elapsed += clock.restart();
+
+        // If enough time has passed we should update the game state, unless
+        // we have skipped more frames than the limit, in which case we skip
+        // the update and draw
+        while( elapsed > kTickDuration &&
+                skippedFrames < kMaxFrameSkip)
         {
+            // Handle events, update the game, count the (possibly) skipped 
+            // frame and adjust the time elapsed to account for the current
+            // tick, trying to keep a constant game update rate
+            HandleEvents();
             Step();
-            nextGameTick += SkipTicks;
-            loops++;
+            elapsed -= kTickDuration;
+            skippedFrames++;
         }
 
+        // Draw a new frame with the current game state
         Draw();
-        HandleEvents();
     }
 }
 
@@ -142,21 +169,11 @@ void Run()
  * After the game has stopped, clean up what is needed and
  * terminate the game.
  */
-void Terminate()
-{
-    // Terminate the Engine
-    Engine::Terminate();
-
-    // TODO
-    // Save any config needed
-    // Closes everything used
-}
-
-// ============================================== //
-
-void Stop()
-{
-    isRunning = false;
+void Terminate() {
+    // TODO: Save any config needed
+    // TODO: Terminate the frameworks...
+    // Close the window
+    window.close();
 }
 
 // ============================================== //
