@@ -1,4 +1,8 @@
 #include <string>
+#include <iostream>
+
+#include <GL/glew.h>
+#include <SFML/OpenGL.hpp>
 
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
@@ -37,11 +41,17 @@ namespace {
 
 // ============================================== //
 
+sf::RenderWindow& GetWindow() {
+    return window;
+}
+
+// ============================================== //
+
 /**
  * Perform a game step
  */
 void Step() {
-    currentScreen->step();
+    if (currentScreen) currentScreen->step();
 }
 
 // ============================================== //
@@ -56,7 +66,7 @@ void Draw() {
     //window.clear(sf::Color(150,200,0));
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    currentScreen->draw();
+    if (currentScreen) currentScreen->draw();
     window.display();
 }
 
@@ -79,7 +89,8 @@ void HandleEvents() {
             // Adjust the viewport when the window is resized
             resWidth = event.size.width;
             resHeight = event.size.height;
-            glViewport(0, 0, event.size.width, event.size.height);
+            glViewport(0, 0, resWidth, resHeight);
+            if (currentScreen) currentScreen->onResize(resWidth, resHeight);
         }
         // TODO: Create a Key Handler
         else if (event.type == sf::Event::KeyPressed) {
@@ -101,8 +112,13 @@ void HandleEvents() {
  */
 void Initialize() {
     // TODO: Load Configs
-    // TODO: Set up the initial game state
-    currentScreen = new GameScreen();
+
+    // Initialize GLEW and check for OpenGL 3.2 support
+    if ((glewInit() != GLEW_OK) || (!GLEW_VERSION_3_2)) {
+        // TODO: Add better error handling here!
+        exit(1);
+    }
+    std::cout << "Using GLEW: " << glewGetString(GLEW_VERSION) << std::endl;
 
     // Reset the clock
     clock.restart();
@@ -111,13 +127,17 @@ void Initialize() {
     window.create(
         sf::VideoMode(resWidth, resHeight),
         windowTitle,
-        sf::Style::Close
+        sf::Style::Close | sf::Style::Resize
     );
     
     // Set some OpenGL stuff up!
     // TODO: is glViewport call necessary??
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glViewport(0, 0, resWidth, resHeight);
+    
+    // TODO: Set up the initial game state
+    currentScreen = new GameScreen();
+    std::cout << "Created screen" << std::endl;
 }
 
 // ============================================== //
@@ -160,6 +180,12 @@ void Run() {
 
         // Draw a new frame with the current game state
         Draw();
+
+        // Super trick to avoid waisting so much CPU time
+        // Of course, this limit our FPS (max=980 FPS)
+        // since we must sleep for one milisecond
+        // In practice it doesn't hurt that much.
+        sf::sleep(sf::milliseconds(2));
     }
 }
 
@@ -173,7 +199,7 @@ void Terminate() {
     // TODO: Save any config needed
     // TODO: Terminate the frameworks...
     // Close the window
-    window.close();
+    if (window.isOpen()) window.close();
 }
 
 // ============================================== //

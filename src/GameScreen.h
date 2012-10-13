@@ -13,9 +13,11 @@ class GameScreen {
         virtual ~GameScreen();
         virtual void step();
         virtual void draw();
+        virtual void onResize(int width, int height);
 
     private:
-        float degree_;
+        void drawTopPanel();
+        void drawLevel();
 };
 
 // ============================================== //
