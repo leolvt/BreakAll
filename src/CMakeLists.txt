@@ -38,8 +38,10 @@ link_directories(${PROJECT_SOURCE_DIR}/../lib)
 # List the project source files
 set(BREAKALL_SRC
     ${BREAKALL_SRC}
+    Level.cpp
     GameScreen.cpp
     BreakAll.cpp
+    Util.cpp
     main.cpp
 )
 
@@ -48,3 +50,5 @@ add_executable(BreakAll ${BREAKALL_SRC})
 target_link_libraries(BreakAll ${BREAKALL_LIBS})
 target_link_libraries(BreakAll)
 
+file(COPY "vertex-shader.glsl" DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY "fragment-shader.glsl" DESTINATION ${CMAKE_BINARY_DIR})

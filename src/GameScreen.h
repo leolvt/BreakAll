@@ -5,6 +5,8 @@
 
 namespace BreakAll {
 
+class Level;
+
 // ============================================== //
 
 class GameScreen {
@@ -18,6 +20,13 @@ class GameScreen {
     private:
         void drawTopPanel();
         void drawLevel();
+
+        GLuint m_vao_top_panel;
+        GLuint m_vbo_top_panel;
+        GLuint m_ibo_top_panel;
+        int m_width;
+        int m_height;
+        Level* m_level;
 };
 
 // ============================================== //

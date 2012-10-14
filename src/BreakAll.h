@@ -1,16 +1,23 @@
 #ifndef BREAKALL_H_INCLUDED
 #define BREAKALL_H_INCLUDED
 
-#include <SFML/Graphics.hpp>
+#include <GL/glew.h>
+#include <SFML/OpenGL.hpp>
+
+namespace sf {
+class RenderWindow;
+}
 
 // ============================================== //
 
 namespace BreakAll
 {
-    void Initialize();
-    void Run();
-    void Terminate();
-    sf::RenderWindow& GetWindow();
+
+void Initialize();
+void Run();
+void Terminate();
+
+GLint GetVertexAttribCoord();
 
 } /* BreakAll */
 
