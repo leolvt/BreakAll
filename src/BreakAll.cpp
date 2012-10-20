@@ -46,6 +46,7 @@ namespace {
     GLuint vertexShader;
     GLuint fragmentShader;
     GLint modelViewProjection;
+    GLint colorFact;
 };
 
 // ============================================== //
@@ -94,15 +95,31 @@ void SetOpenGL() {
         throw OpenGLError;
     }
 
+    // Get the Uniform location
+    colorFact = glGetUniformLocation(program, "colorFact");
+    if (colorFact == -1) {
+        std::cerr << "glGetUniformLocation: " << std::endl;
+        PrintLog(program);
+        throw OpenGLError;
+    }
+
     // Start using the program
     glUseProgram(program);
 
     // Set the color to clear the buffers
-    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClearColor(0.0, 0.0, 0.0, 1.0);
 
     // Enable alpha
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // Enable Depth test
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+
+    // Enable Polygon Offset to draw better lines
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonOffset(1, 1);
 }
 
 // ============================================== //
@@ -133,7 +150,7 @@ void Initialize() {
     SetOpenGL();
 
     // Set up the initial game state
-    currentScreen = new GameScreen();
+    currentScreen = new GameScreen(resWidth, resHeight);
 }
 
 // ============================================== //
@@ -156,7 +173,6 @@ void HandleEvents() {
             resWidth = event.size.width;
             resHeight = event.size.height;
             glViewport(0, 0, resWidth, resHeight);
-            if (currentScreen) currentScreen->onResize(resWidth, resHeight);
         }
         // TODO: Create a proper Key Handler
         else if (event.type == sf::Event::KeyPressed) {
@@ -272,8 +288,15 @@ void Terminate() {
  * Set the Model View Projection matrix on the shader
  */
 void SetMVP(glm::mat4 model, glm::mat4 view, glm::mat4 projection) {
-    glm::mat4 MVP = model * view * projection;
+    //glm::mat4 MVP = model * view * projection;
+    glm::mat4 MVP = projection * view * model;
     glUniformMatrix4fv(modelViewProjection, 1, GL_FALSE, &MVP[0][0]);
+}
+
+// ============================================== //
+
+void SetColorFact(float fact) {
+    glUniform1f(colorFact, fact);
 }
 
 // ============================================== //

@@ -21,15 +21,15 @@ std::string ReadFile(const std::string filename) {
     // Open the file
     std::ifstream file(filename);
     file.exceptions ( std::ifstream::failbit | std::ifstream::badbit );
-    //if ( !file.good() ) return ""; 
+    //if ( !file.good() ) return "";
 
     // Read its contents to a string
     std::stringstream sstr;
     sstr << file.rdbuf();
-    
+
     // Close the file
     file.close();
-    
+
     // Return the string
     return sstr.str();
 }
@@ -71,7 +71,7 @@ GLuint CreateShader(const std::string filename, GLenum type)
 {
     // Read the file into a string
     std::string source = ReadFile(filename);
-    
+
     // Create the shader and copy to source
     GLuint res = glCreateShader(type);
     const GLchar* sourceContent = source.c_str();
@@ -86,7 +86,7 @@ GLuint CreateShader(const std::string filename, GLenum type)
     // If there was an error, print it!
     if (compile_ok == GL_FALSE) {
         std::cerr << filename << ": ";
-        PrintLog(res); 
+        PrintLog(res);
         std::cerr << std::endl;
         glDeleteShader(res);
         return 0;

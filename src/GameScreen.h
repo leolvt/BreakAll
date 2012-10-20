@@ -3,6 +3,9 @@
 
 #include <glm/glm.hpp>
 
+#include <GL/glew.h>
+#include <SFML/OpenGL.hpp>
+
 // ============================================== //
 
 namespace BreakAll {
@@ -13,13 +16,13 @@ class Level;
 
 class GameScreen {
     public:
-        GameScreen();
+        GameScreen(int width, int height);
         virtual ~GameScreen();
         virtual void step();
         virtual void draw();
-        virtual void onResize(int width, int height);
 
     private:
+		void createTopPanel();
         void drawTopPanel();
         void drawLevel();
 
@@ -33,6 +36,8 @@ class GameScreen {
 
         int m_width;
         int m_height;
+		int m_top_panel_height;
+		float m_aspect;
         Level* m_level;
 };
 

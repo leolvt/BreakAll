@@ -19,6 +19,7 @@ void Initialize();
 void Run();
 void Terminate();
 void SetMVP(glm::mat4 model, glm::mat4 view, glm::mat4 projection);
+void SetColorFact(float fact);
 
 // ============================================== //
 
