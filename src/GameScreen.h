@@ -1,6 +1,8 @@
 #ifndef BREAKALL_GAMESCREEN_H_INCLUDED
 #define BREAKALL_GAMESCREEN_H_INCLUDED
 
+#include <glm/glm.hpp>
+
 // ============================================== //
 
 namespace BreakAll {
@@ -24,6 +26,11 @@ class GameScreen {
         GLuint m_vao_top_panel;
         GLuint m_vbo_top_panel;
         GLuint m_ibo_top_panel;
+
+        glm::mat4 model;
+        glm::mat4 view;
+        glm::mat4 projection;
+
         int m_width;
         int m_height;
         Level* m_level;

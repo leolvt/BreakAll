@@ -6,6 +6,8 @@
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
 
+#include <glm/glm.hpp>
+
 #include "Util.h"
 
 namespace BreakAll {
@@ -91,6 +93,12 @@ GLuint CreateShader(const std::string filename, GLenum type)
     }
 
     return res;
+}
+
+// ============================================== //
+
+double pi() {
+    return glm::atan(1.0) * 4;
 }
 
 // ============================================== //

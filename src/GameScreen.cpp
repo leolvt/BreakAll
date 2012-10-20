@@ -1,9 +1,14 @@
 #include <iostream>
 
 #include <GL/glew.h>
+
 #include <SFML/OpenGL.hpp>
 #include <SFML/Graphics.hpp>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include "Util.h"
 #include "Level.h"
 #include "BreakAll.h"
 #include "GameScreen.h"
@@ -23,10 +28,14 @@ GameScreen::GameScreen() {
     // Define the vertices of the top panel
     GLubyte indices[] = {0, 1, 3, 2};
     GLfloat vertices[] = {
-        -1.3f, 1.0f, 0.0f, 1.0f,   0.8f, 0.2f, 0.4f, 1.0f,
-         1.3f, 1.0f, 0.0f, 1.0f,   0.8f, 0.2f, 0.4f, 1.0f,
-         1.3f, 0.9f, 0.0f, 1.0f,   0.8f, 0.2f, 0.4f, 1.0f,
-        -1.3f, 0.9f, 0.0f, 1.0f,   0.8f, 0.2f, 0.4f, 1.0f,
+        //-1.3f, 1.0f, 0.0f, 1.0f,   0.8f, 0.2f, 0.4f, 1.0f,
+         //1.3f, 1.0f, 0.0f, 1.0f,   0.8f, 0.2f, 0.4f, 1.0f,
+         //1.3f, 0.9f, 0.0f, 1.0f,   0.8f, 0.2f, 0.4f, 1.0f,
+        //-1.3f, 0.9f, 0.0f, 1.0f,   0.8f, 0.2f, 0.4f, 1.0f,
+        -1.3f, 1.0f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f, 1.0f,
+         1.3f, 1.0f, 0.0f, 1.0f,   0.0f, 1.0f, 0.0f, 1.0f,
+         1.3f, 0.9f, 0.0f, 1.0f,   0.0f, 1.0f, 0.0f, 1.0f,
+        -1.3f, 0.9f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f, 1.0f,
     };
 
     // Discard previous errors
@@ -58,15 +67,21 @@ GameScreen::GameScreen() {
     GLenum ErrorCheckValue = glGetError();
     if (ErrorCheckValue != GL_NO_ERROR)
     {
-        std::cerr << "ERROR: Could not create a VBO: ";
+        std::cerr << "ERROR: Top Panel: Could not create a VBO: ";
         std::cerr << gluErrorString(ErrorCheckValue) << std::endl;
-        exit(-1); // TODO: Throw exception
+        throw OpenGLError;
     }
     
     // Unbind the buffers
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+
+    // Compute the Model, View and Projection
+    model = glm::mat4(1.0f);
+    view = glm::mat4(1.0f);
+    projection = glm::ortho(-1.0, 1.0, -1.0, 1.0);
+    SetMVP(model, view, projection);
 }
 
 // ============================================== //
@@ -102,15 +117,21 @@ void GameScreen::onResize(int width, int height) {
         // Update the vertices
         float aspect = (float)m_width/m_height;
         GLfloat vertices[] = {
-            -aspect, 1.0f, 0.0f, 1.0f,   0.8f, 0.2f, 0.4f, 1.0f,
-             aspect, 1.0f, 0.0f, 1.0f,   0.8f, 0.2f, 0.4f, 1.0f,
-             aspect, 0.9f, 0.0f, 1.0f,   0.8f, 0.2f, 0.4f, 1.0f,
-            -aspect, 0.9f, 0.0f, 1.0f,   0.8f, 0.2f, 0.4f, 1.0f,
+            -aspect, 1.0f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f, 1.0f,
+             aspect, 1.0f, 0.0f, 1.0f,   0.0f, 1.0f, 0.0f, 1.0f,
+             aspect, 0.9f, 0.0f, 1.0f,   0.0f, 1.0f, 0.0f, 1.0f,
+            -aspect, 0.9f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f, 1.0f,
         };
         glBindBuffer(GL_ARRAY_BUFFER, m_vbo_top_panel);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, 
                 GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+        
+        // Compute the Model, View and Projection
+        model = glm::mat4(1.0f);
+        view = glm::mat4(1.0f);
+        projection = glm::ortho(-aspect, aspect, -1.0f, 1.0f);
+        SetMVP(model, view, projection);
     }
 }
 
@@ -129,8 +150,6 @@ void GameScreen::step() {
  * Draw the top panel, with game-wide information
  */
 void GameScreen::drawTopPanel() {
-    float topPanelHeight = m_height * 0.1;
-    float aspect = (float)m_width / m_height;
 
     // Bind the buffers and activate the attributes
     glBindVertexArray(m_vao_top_panel);

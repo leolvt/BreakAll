@@ -3,10 +3,11 @@
 
 #include <GL/glew.h>
 
+#include <glm/glm.hpp>
+
 #include <SFML/OpenGL.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
 
 #include "Util.h"
 #include "BreakAll.h"
@@ -26,7 +27,7 @@ namespace {
     const int kMaxFrameSkip = 10;
 
     // Window and its properties
-    sf::RenderWindow window;
+    sf::Window window;
     int resWidth = 1024;
     int resHeight = 768;
     std::string windowTitle = "BreakAll 0.2";
@@ -39,12 +40,12 @@ namespace {
     bool isRunning = false;
 
     // OpenGL GLSL Program and sources
-    const char* vertexShaderSource = "vertex-shader.glsl";
-    const char* fragmentShaderSource = "fragment-shader.glsl";
+    const char* vertexShaderSource = "simple.v.glsl";
+    const char* fragmentShaderSource = "simple.f.glsl";
     GLuint program;
     GLuint vertexShader;
     GLuint fragmentShader;
-    GLint attribute_coord2d;
+    GLint modelViewProjection;
 };
 
 // ============================================== //
@@ -58,15 +59,20 @@ void SetOpenGL() {
     // Print some version stuff
     std::cout << "Using GLEW " << glewGetString(GLEW_VERSION) << std::endl;
     std::cout << "Using OpenGL " << glGetString(GL_VERSION) << std::endl;
-    std::cout << "Using GLSL " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+    std::cout << "Using GLSL " << glGetString(GL_SHADING_LANGUAGE_VERSION)
+        << std::endl;
     std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
     std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
 
     // Load and compile the shaders
     vertexShader = CreateShader(vertexShaderSource, GL_VERTEX_SHADER);
     fragmentShader = CreateShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
-    if (vertexShader + fragmentShader == 0) exit(1); // TODO: Error handling
-    
+    if (vertexShader + fragmentShader == 0)  {
+        PrintLog(vertexShader);
+        PrintLog(fragmentShader);
+        throw OpenGLError;
+    }
+
     // Link the Program
     GLint link_ok = GL_FALSE;
     program = glCreateProgram();
@@ -77,13 +83,23 @@ void SetOpenGL() {
     if (!link_ok) {
         std::cerr << "glLinkProgram: " << std::endl;
         PrintLog(program);
-        exit(1); // TODO: Error handling
+        throw OpenGLError;
     }
+
+    // Get the Uniform location
+    modelViewProjection = glGetUniformLocation(program, "mvp");
+    if (modelViewProjection == -1) {
+        std::cerr << "glGetUniformLocation: " << std::endl;
+        PrintLog(program);
+        throw OpenGLError;
+    }
+
+    // Start using the program
     glUseProgram(program);
 
     // Set the color to clear the buffers
     glClearColor(0.0, 0.0, 0.0, 0.0);
-    
+
     // Enable alpha
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -100,7 +116,7 @@ void Initialize() {
 
     // Initialize GLEW and check for OpenGL 4.0 support
     if ((glewInit() != GLEW_OK) || (!GLEW_VERSION_4_0)) {
-        exit(1); // TODO: Error handling
+        throw GLEWError;
     }
 
     // Reset the clock
@@ -112,22 +128,12 @@ void Initialize() {
         windowTitle,
         sf::Style::Close | sf::Style::Resize
     );
-    
+
     // Set some OpenGL stuff up!
     SetOpenGL();
 
     // Set up the initial game state
     currentScreen = new GameScreen();
-}
-
-// ============================================== //
-
-/**
- * Retrieve the Vertex Attribute that describe the coordinates of a vertex 
- * on the vertex shader code
- */
-GLint GetVertexAttribCoord() {
-    return attribute_coord2d;
 }
 
 // ============================================== //
@@ -154,7 +160,7 @@ void HandleEvents() {
         }
         // TODO: Create a proper Key Handler
         else if (event.type == sf::Event::KeyPressed) {
-            if(event.key.code == sf::Keyboard::Q || 
+            if(event.key.code == sf::Keyboard::Q ||
                event.key.code == sf::Keyboard::Escape) {
 
                 isRunning = false;
@@ -179,8 +185,8 @@ void Step() {
  * Draw the game
  */
 void Draw() {
-   
-    // Clear the window 
+
+    // Clear the window
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Draw the screen
@@ -192,7 +198,7 @@ void Draw() {
 
 // ============================================== //
 
-/*
+/**
  * Run the game. The game loop is inside here.
  */
 void Run() {
@@ -219,7 +225,7 @@ void Run() {
         while( elapsed > kTickDuration &&
                 skippedFrames < kMaxFrameSkip)
         {
-            // Handle events, update the game, count the (possibly) skipped 
+            // Handle events, update the game, count the (possibly) skipped
             // frame and adjust the time elapsed to account for the current
             // tick, trying to keep a constant game update rate
             HandleEvents();
@@ -241,24 +247,33 @@ void Run() {
 
 // ============================================== //
 
-/*
+/**
  * After the game has stopped, clean up what is needed and
  * terminate the game.
  */
 void Terminate() {
     // TODO: Save any config needed
-    
+
     // Make sure we are not running
     if (isRunning) isRunning = false;
-    
+
     // Delete and free OpenGL stuff
-    glDisableVertexAttribArray(attribute_coord2d);
     glDeleteProgram(program);
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
-     
+
     // Close the window
     if (window.isOpen()) window.close();
+}
+
+// ============================================== //
+
+/**
+ * Set the Model View Projection matrix on the shader
+ */
+void SetMVP(glm::mat4 model, glm::mat4 view, glm::mat4 projection) {
+    glm::mat4 MVP = model * view * projection;
+    glUniformMatrix4fv(modelViewProjection, 1, GL_FALSE, &MVP[0][0]);
 }
 
 // ============================================== //

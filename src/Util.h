@@ -10,6 +10,7 @@ namespace BreakAll {
 std::string ReadFile(const std::string filename);
 void PrintLog(GLuint object);
 GLuint CreateShader(const std::string filename, GLenum type);
+double pi();
 
 }; /* Breakall*/
 

@@ -17,6 +17,7 @@ set(CMAKE_MODULE_PATH
 # Find the libraries we are using
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
+find_package(GLM REQUIRED)
 find_package(SFML 2 REQUIRED COMPONENTS window system graphics)
 
 # Gather all the libs into one variable
@@ -24,6 +25,7 @@ set(BREAKALL_LIBS
     ${BREAKALL_LIBS}
     ${OPENGL_LIBRARIES}
     ${GLEW_LIBRARIES}
+    ${GLM_LIBRARIES}
     ${SFML_LIBRARIES}
 )
 
@@ -45,10 +47,22 @@ set(BREAKALL_SRC
     main.cpp
 )
 
+set(BREAKALL_COPY_FILES
+    ${BREAKALL_COPY_FILES}
+    "simple.v.glsl"
+    "simple.f.glsl"
+)
+
+
 # Declare the executable with the  used libraries
 add_executable(BreakAll ${BREAKALL_SRC})
 target_link_libraries(BreakAll ${BREAKALL_LIBS})
 target_link_libraries(BreakAll)
 
-file(COPY "vertex-shader.glsl" DESTINATION ${CMAKE_BINARY_DIR})
-file(COPY "fragment-shader.glsl" DESTINATION ${CMAKE_BINARY_DIR})
+# Add a 'run' target
+add_custom_target(run
+    COMMAND BreakAll
+    DEPENDS BreakAll
+    WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
+)
+
