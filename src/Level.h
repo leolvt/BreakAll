@@ -1,6 +1,8 @@
 #ifndef BREAKALL_LEVEL_H_INCLUDED
 #define BREAKALL_LEVEL_H_INCLUDED
 
+#include <vector>
+
 #include <glm/glm.hpp>
 
 #include <GL/glew.h>
@@ -22,21 +24,18 @@ class Level {
         virtual void draw();
     private:
 		void createBottomPanel();
+		void createBricks(int rows, int cols);
 		void drawBottomBar();
 
         int m_width;
         int m_height;
+		float m_bottom_panel_height;
         float m_aspect;
-        glm::vec3 m_degree;
-
-        GLuint m_vao_box;
-        GLuint m_vbo_box;
-        GLuint m_ibo_box;
 
         GLuint m_vao_bottom_panel;
         GLuint m_vbo_bottom_panel;
         GLuint m_ibo_bottom_panel;
-		Brick* brick;
+		std::vector<Brick*> bricks;
 
         glm::mat4 model;
         glm::mat4 view;

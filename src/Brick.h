@@ -25,7 +25,6 @@ class Brick {
         GLuint m_vbo;
         GLuint m_ibo;
 
-        glm::vec3 m_degree;
 		glm::vec3 m_scale;
 		glm::vec3 m_position;
 		glm::mat4 m_model;

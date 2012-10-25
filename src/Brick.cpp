@@ -23,14 +23,14 @@ Brick::Brick(glm::vec3 size, glm::vec3 position) {
 		0, 1, 3, 2, 0, 4, 7, 2, 3, 6, 7, 6, 5, 4, 5, 1,    // Cuve Edges
 	};
 	GLfloat vertices[] = {
-		 1.0f,  1.0f, -1.0f, 1.0f,   1.00f, 0.00f, 0.00f, 1.0f,
-		 1.0f, -1.0f, -1.0f, 1.0f,   0.00f, 1.00f, 0.00f, 1.0f,
-		 1.0f,  1.0f,  1.0f, 1.0f,   0.00f, 0.00f, 1.00f, 1.0f,
-		 1.0f, -1.0f,  1.0f, 1.0f,   1.00f, 1.00f, 0.00f, 1.0f,
-		-1.0f,  1.0f, -1.0f, 1.0f,   1.00f, 0.00f, 1.00f, 1.0f,
-		-1.0f, -1.0f, -1.0f, 1.0f,   0.00f, 1.00f, 1.00f, 1.0f,
-		-1.0f, -1.0f,  1.0f, 1.0f,   1.00f, 1.00f, 1.00f, 1.0f,
-		-1.0f,  1.0f,  1.0f, 1.0f,   0.00f, 0.00f, 0.00f, 1.0f,
+		 1.0f,  1.0f, -1.0f, 1.0f,   0.20f, 0.80f, 0.20f, 1.0f,
+		 1.0f, -1.0f, -1.0f, 1.0f,   0.20f, 0.80f, 0.20f, 1.0f,
+		 1.0f,  1.0f,  1.0f, 1.0f,   0.20f, 0.80f, 0.20f, 1.0f,
+		 1.0f, -1.0f,  1.0f, 1.0f,   0.20f, 0.80f, 0.20f, 1.0f,
+		-1.0f,  1.0f, -1.0f, 1.0f,   0.20f, 0.80f, 0.20f, 1.0f,
+		-1.0f, -1.0f, -1.0f, 1.0f,   0.20f, 0.80f, 0.20f, 1.0f,
+		-1.0f, -1.0f,  1.0f, 1.0f,   0.20f, 0.80f, 0.20f, 1.0f,
+		-1.0f,  1.0f,  1.0f, 1.0f,   0.20f, 0.80f, 0.20f, 1.0f,
 	};
 
     // Discard previous errors
@@ -72,14 +72,10 @@ Brick::Brick(glm::vec3 size, glm::vec3 position) {
     glBindVertexArray(0);
 
 	// Create and scale the model matrix
-    m_degree = glm::vec3(0.0f);
 	m_position = position;
 	m_scale = size / 2.0f;
 	m_model = glm::mat4(1.0f);
 	m_model = glm::translate(m_model, m_position);
-    m_model = glm::rotate(m_model, m_degree.x, glm::vec3(1.0f, 0.0f, 0.0f));
-    m_model = glm::rotate(m_model, m_degree.y, glm::vec3(0.0f, 1.0f, 0.0f));
-    m_model = glm::rotate(m_model, m_degree.z, glm::vec3(0.0f, 0.0f, 1.0f));
 	m_model = glm::scale(m_model, m_scale);
 }
 
@@ -105,22 +101,6 @@ glm::mat4 Brick::getModelMatrix() {
  * Update the brick
  */
 void Brick::step() {
-    m_degree += glm::vec3(
-        360.0 / (50 * 10.0),
-        360.0 / (50 * 10.0),
-        360.0 / (50 * 10.0)
-    );
-    while (m_degree.x > 360) m_degree.x -= 360;
-    while (m_degree.y > 360) m_degree.y -= 360;
-    while (m_degree.z > 360) m_degree.z -= 360;
-
-	// Update the model matrix
-	m_model = glm::mat4(1.0f);
-	m_model = glm::translate(m_model, m_position);
-    m_model = glm::rotate(m_model, m_degree.x, glm::vec3(1.0f, 0.0f, 0.0f));
-    m_model = glm::rotate(m_model, m_degree.y, glm::vec3(0.0f, 1.0f, 0.0f));
-    m_model = glm::rotate(m_model, m_degree.z, glm::vec3(0.0f, 0.0f, 1.0f));
-	m_model = glm::scale(m_model, m_scale);
 }
 
 // ============================================== //

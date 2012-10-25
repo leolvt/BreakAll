@@ -1,3 +1,4 @@
+#include <vector>
 #include <iostream>
 
 #include <GL/glew.h>
@@ -21,31 +22,29 @@ namespace BreakAll {
  */
 Level::Level(int width, int height) {
 
-	// Create a brick
-	createBottomPanel();
-	brick = new Brick(
-		glm::vec3(0.6, 0.3, 0.3), // size
-		glm::vec3(0.0, 0.0, 0.0) // position
-	);
-
     // Store the level area
     m_width = width;
     m_height = height;
     m_aspect = (float)width / height;
     std::cout << "Aspect: " << m_aspect << std::endl;
 
+	// Create the bottom panel and the bricks
+	createBottomPanel();
+	createBricks(5, 7);
+
     // Compute the Model, View and Projection
 	model = glm::mat4(1.0f);
     view = glm::lookAt(
-        glm::vec3(0.0f, 0.0f, 3.0f), // eye
+        glm::vec3(0.0f, 0.0f, 1.0f), // eye
         glm::vec3(0.0f, 0.0f, 0.0f), // center
         glm::vec3(0.0f, 1.0f, 0.0f)  // up
     );
 	projection = glm::frustum(
 		-m_aspect, m_aspect,
 		-1.0f, 1.0f,
-		2.0f, 40.0f
+		1.0f, 40.0f
 	);
+	//projection = glm::ortho(-m_aspect, m_aspect, -1.0f, 1.0f, 0.0f, 40.0f);
 }
 
 // ============================================== //
@@ -57,15 +56,15 @@ Level::Level(int width, int height) {
 void Level::createBottomPanel() {
 
 	// Compute the aspect ration and the pannel height
-    float aspect = (float)m_width / m_height;
-	float height = -1.0f + 0.15f;
+	m_bottom_panel_height = 0.15f;
+	float height = -1.0f + m_bottom_panel_height;
 
     // Define the vertices of the panel
     GLfloat vertices[] = {
-         aspect, height, 2.0f, 1.0f,   0.60f, 0.20f, 0.10f, 1.0f,
-         aspect, -1.0f,  2.0f, 1.0f,   0.60f, 0.20f, 0.10f, 1.0f,
-        -aspect, height, 2.0f, 1.0f,   0.60f, 0.20f, 0.10f, 1.0f,
-        -aspect, -1.0f,  2.0f, 1.0f,   0.60f, 0.20f, 0.10f, 1.0f,
+         m_aspect, height, 2.0f, 1.0f,   0.60f, 0.20f, 0.10f, 1.0f,
+         m_aspect, -1.0f,  2.0f, 1.0f,   0.60f, 0.20f, 0.10f, 1.0f,
+        -m_aspect, height, 2.0f, 1.0f,   0.60f, 0.20f, 0.10f, 1.0f,
+        -m_aspect, -1.0f,  2.0f, 1.0f,   0.60f, 0.20f, 0.10f, 1.0f,
     };
 
     // Discard previous errors
@@ -103,11 +102,53 @@ void Level::createBottomPanel() {
 
 // ============================================== //
 
+void Level::createBricks(int rows, int cols) {
+	// Define the spacing
+	float Space = 0.05;
+	float horizontalSpace = 0.05;
+	float verticalSpace = 0.05;
+	float spacingScale = 0.9f;
+
+	// Compute brick size
+	float brickWidthMax = (2.0 * (m_aspect-horizontalSpace)) / cols;
+	float brickHeightMax = (1.0 - 2*verticalSpace) / rows;
+	float brickWidth = spacingScale * brickWidthMax;
+	float brickHeight = spacingScale * brickHeightMax;
+	float brickLength = 0.5f * spacingScale;
+
+	// Create the bricks
+	float xOffset = -m_aspect + horizontalSpace + brickWidthMax/2;
+	float yOffset = 1 - verticalSpace - brickHeightMax/2;
+	std::cout << "*** xOFfset: " << xOffset << ", yOffset: " << yOffset << std::endl;
+	std::cout << "*** MaxWidth: " << brickWidthMax << ", MaxHeight: " << brickHeightMax << std::endl;
+	glm::vec3 size(brickWidth, brickHeight, brickLength);
+	for (int row = 0; row < rows; ++row) {
+		for (int col = 0; col < cols; ++col) {
+			glm::vec3 position(xOffset, yOffset, -0.25f);
+			this->bricks.push_back(new Brick(size, position));
+			xOffset += brickWidthMax;
+			std::cout << "Brick " << row << ", " << col << std::endl;
+			std::cout << "   Size: " << size.x << ", " << size.y << ", " << size.z << std::endl;
+			std::cout << "   Position: " << position.x << ", " << position.y << ", " << position.z << std::endl;
+		}
+		// Update the offsets: Go back to the first column, and forward to
+		// the next row
+		xOffset = -m_aspect + horizontalSpace + brickWidthMax/2;
+		yOffset -= brickHeightMax;
+	}
+}
+
+// ============================================== //
+
 /**
  * Destructor
  */
 Level::~Level() {
-	if (brick) delete brick;
+	//if (brick) delete brick;
+	for(Brick* b : bricks) {
+		if (b) delete b;
+	}
+	bricks.clear();
 
     // Unbind the vertices
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -125,7 +166,10 @@ Level::~Level() {
  * Update the logic behind the level
  */
 void Level::step() {
-	if (brick) brick->step();
+	//if (brick) brick->step();
+	for (Brick* b: bricks) {
+		if (b) b->step();
+	}
 }
 
 // ============================================== //
@@ -141,7 +185,7 @@ void Level::drawBottomBar() {
     glEnableVertexAttribArray(1);
 
     // Set the current ModelViewProjection Matrix
-    SetMVP(glm::mat4(1.0f), glm::mat4(1.0f), 
+    SetMVP(glm::mat4(1.0f), glm::mat4(1.0f),
 		   glm::ortho(-m_aspect, m_aspect, -1.0f, 1.0f, -2.0f, 0.0f));
 
     // Draw the vertices
@@ -163,11 +207,15 @@ void Level::drawBottomBar() {
 void Level::draw() {
 
 	drawBottomBar();
-	if (brick) {
-		glm::mat4 brickModel = brick->getModelMatrix();
-		SetMVP(brickModel, view, projection);
-		brick->draw();
+	for (Brick* b: bricks) {
+		SetMVP(b->getModelMatrix(), view, projection);
+		b->draw();
 	}
+	//if (brick) {
+		//glm::mat4 brickModel = brick->getModelMatrix();
+		//SetMVP(brickModel, view, projection);
+		//brick->draw();
+	//}
 }
 
 // ============================================== //
