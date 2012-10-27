@@ -21,9 +21,12 @@ class Brick {
 		glm::mat4 getModelMatrix();
 
     private:
-        GLuint m_vao;
-        GLuint m_vbo;
-        GLuint m_ibo;
+		static void CreateGLObjects();
+		static void DeleteGLObjects();
+		static int s_num_bricks;
+        static GLuint s_vao;
+        static GLuint s_vbo;
+        static GLuint s_ibo;
 
 		glm::vec3 m_scale;
 		glm::vec3 m_position;
