@@ -28,23 +28,23 @@ Level::Level(int width, int height) {
     m_aspect = (float)width / height;
     std::cout << "Aspect: " << m_aspect << std::endl;
 
-	// Create the bottom panel and the bricks
+	// Create the bottom panel and the brick walls
 	createBottomPanel();
-	createBricks(5, 7);
+	createWalls(5, 5, 7);
 
     // Compute the Model, View and Projection
-	model = glm::mat4(1.0f);
-    view = glm::lookAt(
+	m_model = glm::mat4(1.0f);
+    m_view = glm::lookAt(
         glm::vec3(0.0f, 0.0f, 1.0f), // eye
         glm::vec3(0.0f, 0.0f, 0.0f), // center
         glm::vec3(0.0f, 1.0f, 0.0f)  // up
     );
-	projection = glm::frustum(
+	m_projection = glm::frustum(
 		-m_aspect, m_aspect,
 		-1.0f, 1.0f,
 		1.0f, 40.0f
 	);
-	//projection = glm::ortho(-m_aspect, m_aspect, -1.0f, 1.0f, 0.0f, 40.0f);
+	//m_projection = glm::ortho(-m_aspect, m_aspect, -1.0f, 1.0f, 0.0f, 40.0f);
 }
 
 // ============================================== //
@@ -102,40 +102,65 @@ void Level::createBottomPanel() {
 
 // ============================================== //
 
-void Level::createBricks(int rows, int cols) {
-	// Define the spacing
-	float Space = 0.05;
-	float horizontalSpace = 0.05;
-	float verticalSpace = 0.05;
-	float spacingScale = 0.9f;
+/**
+ * Create 'count' walls of 'rows' x 'cols' bricks.
+ */
+void Level::createWalls(int count, int rows, int cols) {
 
 	// Compute brick size
-	float brickWidthMax = (2.0 * (m_aspect-horizontalSpace)) / cols;
-	float brickHeightMax = (1.0 - 2*verticalSpace) / rows;
-	float brickWidth = spacingScale * brickWidthMax;
-	float brickHeight = spacingScale * brickHeightMax;
-	float brickLength = 0.5f * spacingScale;
+	float xSpace = 0.05f;
+	float ySpace = 0.05f;
+	float brickWidthMax = (2.0 * (m_aspect-xSpace)) / cols;
+	float brickHeightMax = (1.0 - 2*ySpace) / rows;
+	float brickLengthMax = brickHeightMax;
+	float xScaling = 0.8f;
+	float yScaling = 0.9f;
+	float zScaling = 0.8f;
+	float brickWidth = xScaling * brickWidthMax;
+	float brickHeight = yScaling * brickHeightMax;
+	float brickLength = zScaling * brickLengthMax ;
+
+	// Initial offsets
+	float xOffset = -m_aspect + xSpace + brickWidthMax/2;
+	float yOffset = 1 - ySpace - brickHeightMax/2;
+	float zOffset = -(brickLengthMax / 2);
+
+	// Print the size and offsets
+	std::cout << "*** xOffset: " << xOffset;
+	std::cout << ", yOffset: " << yOffset;
+	std::cout << ", zOffset: " << zOffset << std::endl;
+	std::cout << "*** MaxWidth: " << brickWidthMax;
+	std::cout << ", MaxHeight: " << brickHeightMax;
+	std::cout << ", MaxLength: " << brickLengthMax << std::endl;
 
 	// Create the bricks
-	float xOffset = -m_aspect + horizontalSpace + brickWidthMax/2;
-	float yOffset = 1 - verticalSpace - brickHeightMax/2;
-	std::cout << "*** xOFfset: " << xOffset << ", yOffset: " << yOffset << std::endl;
-	std::cout << "*** MaxWidth: " << brickWidthMax << ", MaxHeight: " << brickHeightMax << std::endl;
 	glm::vec3 size(brickWidth, brickHeight, brickLength);
-	for (int row = 0; row < rows; ++row) {
-		for (int col = 0; col < cols; ++col) {
-			glm::vec3 position(xOffset, yOffset, -0.25f);
-			this->bricks.push_back(new Brick(size, position));
-			xOffset += brickWidthMax;
-			std::cout << "Brick " << row << ", " << col << std::endl;
-			std::cout << "   Size: " << size.x << ", " << size.y << ", " << size.z << std::endl;
-			std::cout << "   Position: " << position.x << ", " << position.y << ", " << position.z << std::endl;
+	for (int wall = 0; wall < count; ++wall) {
+		Wall w;
+		for (int row = 0; row < rows; ++row) {
+			for (int col = 0; col < cols; ++col) {
+				glm::vec3 position(xOffset, yOffset, zOffset);
+				w.push_back(new Brick(size, position));
+				xOffset += brickWidthMax;
+				//std::cout << "Brick " << row << ", " << col << std::endl;
+				//std::cout << "   Size: " << size.x << ", " << size.y << ", " << size.z << std::endl;
+				//std::cout << "   Position: " << position.x << ", " << position.y << ", " << position.z << std::endl;
+			}
+			// Update the offsets: Go back to the first column, and forward to
+			// the next row
+			xOffset = -m_aspect + xSpace + brickWidthMax/2;
+			yOffset -= brickHeightMax;
 		}
-		// Update the offsets: Go back to the first column, and forward to
-		// the next row
-		xOffset = -m_aspect + horizontalSpace + brickWidthMax/2;
-		yOffset -= brickHeightMax;
+		// Store the new wall
+		m_walls.push_back(w);
+
+		// Update the offsets: Go back to the first row and column and forward
+		// to the next wall
+		xOffset = -m_aspect + xSpace + brickWidthMax/2;
+		yOffset = 1 - ySpace - brickHeightMax/2;
+		zOffset -= brickLength;
 	}
+
 }
 
 // ============================================== //
@@ -144,11 +169,14 @@ void Level::createBricks(int rows, int cols) {
  * Destructor
  */
 Level::~Level() {
-	//if (brick) delete brick;
-	for(Brick* b : bricks) {
-		if (b) delete b;
+	// delete the bricks
+	for (Wall& wall : m_walls) {
+		for (Brick* b : wall) {
+			if (b) delete b;
+		}
+		wall.clear();
 	}
-	bricks.clear();
+	m_walls.clear();
 
     // Unbind the vertices
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -207,15 +235,12 @@ void Level::drawBottomBar() {
 void Level::draw() {
 
 	drawBottomBar();
-	for (Brick* b: bricks) {
-		SetMVP(b->getModelMatrix(), view, projection);
-		b->draw();
+	for (Wall& wall: m_walls) {
+		for (Brick* b: wall) {
+			SetMVP(b->getModelMatrix(), m_view, m_projection);
+			b->draw();
+		}
 	}
-	//if (brick) {
-		//glm::mat4 brickModel = brick->getModelMatrix();
-		//SetMVP(brickModel, view, projection);
-		//brick->draw();
-	//}
 }
 
 // ============================================== //

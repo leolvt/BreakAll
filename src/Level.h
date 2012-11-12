@@ -13,6 +13,7 @@
 namespace BreakAll {
 
 class Brick;
+typedef std::vector<Brick*> Wall;
 
 // ============================================== //
 
@@ -23,8 +24,9 @@ class Level {
         virtual void step();
         virtual void draw();
     private:
+
 		void createBottomPanel();
-		void createBricks(int rows, int cols);
+		void createWalls(int count, int rows, int cols);
 		void drawBottomBar();
 
         int m_width;
@@ -36,10 +38,11 @@ class Level {
         GLuint m_vbo_bottom_panel;
         GLuint m_ibo_bottom_panel;
 		std::vector<Brick*> bricks;
+		std::vector<Wall> m_walls;
 
-        glm::mat4 model;
-        glm::mat4 view;
-        glm::mat4 projection;
+        glm::mat4 m_model;
+        glm::mat4 m_view;
+        glm::mat4 m_projection;
 
 };
 
