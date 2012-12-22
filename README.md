@@ -1,10 +1,17 @@
 BreakAll
 ========
 
-This is a Breakout game, originally developed as an assignment for my 
-Computer Graphics course at Universidade Federal de Minas Gerais (UFMG).
+This project started as an assignment for the CG course I took while undergrad
+at my university (UFMG). It was an implementation of a Breakout game, using
+OpenGL. The final version produced for the course is tagged v0.1.
 
-More information to be added.
+Currently, I'm rewriting the game, incorporating many cool ideas which I either
+saw on other implementations during the CG class or thought myself but didn't
+have time to implement. 
+
+I'm also take the opportunity and using it as a sandbox where I can test things
+and learn more about modern OpenGL programming, so don't expect it to be stable,
+or even playable soon.
 
 Dependencies
 ------------
