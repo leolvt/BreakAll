@@ -10,6 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Level.h"
+#include "Ball.h"
 #include "Brick.h"
 #include "BreakAll.h"
 
@@ -31,6 +32,7 @@ Level::Level(int width, int height) {
 	// Create the bottom panel and the brick walls
 	createBottomPanel();
 	createWalls(5, 5, 7);
+	createBall();
 
 	// Compute the Model, View and Projection
 	m_model = glm::mat4(1.0f);
@@ -45,6 +47,17 @@ Level::Level(int width, int height) {
 		1.0f, 40.0f
 	);
 	//m_projection = glm::ortho(-m_aspect, m_aspect, -1.0f, 1.0f, 0.0f, 40.0f);
+}
+
+// ============================================== //
+
+/**
+ * Create the bottom panel which holds the information
+ * of the current level
+ */
+void Level::createBall() {
+	glm::vec3 pos(0, -1, -5);
+	m_ball = new Ball(0.2f, pos);
 }
 
 // ============================================== //
@@ -198,6 +211,8 @@ void Level::step() {
 	for (Brick* b: bricks) {
 		if (b) b->step();
 	}
+
+	if (m_ball) m_ball->step();
 }
 
 // ============================================== //
@@ -240,6 +255,10 @@ void Level::draw() {
 			SetMVP(b->getModelMatrix(), m_view, m_projection);
 			b->draw();
 		}
+	}
+	if (m_ball) {
+		SetMVP(m_ball->getModelMatrix(), m_view, m_projection);
+		m_ball->draw();
 	}
 }
 

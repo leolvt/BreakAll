@@ -107,7 +107,7 @@ void SetOpenGL() {
 	glUseProgram(program);
 
 	// Set the color to clear the buffers
-	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClearColor(0.8, 1.0, 0.5, 1.0);
 
 	// Enable alpha
 	glEnable(GL_BLEND);
@@ -151,6 +151,7 @@ void Initialize() {
 
 	// Set up the initial game state
 	currentScreen = new GameScreen(resWidth, resHeight);
+
 }
 
 // ============================================== //

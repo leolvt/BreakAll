@@ -13,6 +13,7 @@
 namespace BreakAll {
 
 class Brick;
+class Ball;
 typedef std::vector<Brick*> Wall;
 
 // ============================================== //
@@ -25,6 +26,7 @@ class Level {
         virtual void draw();
     private:
 
+		void createBall();
 		void createBottomPanel();
 		void createWalls(int count, int rows, int cols);
 		void drawBottomBar();
@@ -37,6 +39,7 @@ class Level {
         GLuint m_vao_bottom_panel;
         GLuint m_vbo_bottom_panel;
         GLuint m_ibo_bottom_panel;
+		Ball* m_ball;
 		std::vector<Brick*> bricks;
 		std::vector<Wall> m_walls;
 
